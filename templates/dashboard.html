@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Wi-Fi Security Profiler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Nav -->
+        <header class="header">
+            <div class="logo">
+                📶 Wi-Fi Security Profiler <span style="font-size: 0.8rem; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 12px; margin-left: 8px;">Phase 1 & 2</span>
+            </div>
+            <div class="user-info">
+                <span class="username-tag">👤 {{ username }}</span>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Risk Summary Bar -->
+        <div class="summary-bar">
+            <div class="summary-card">
+                <div class="summary-val">{{ summary.total_profiles }}</div>
+                <div class="summary-label">Total Networks</div>
+            </div>
+            <div class="summary-card" style="border-top: 3px solid var(--accent-red);">
+                <div class="summary-val" style="color: var(--accent-red);">{{ summary.risk_counts.CRITICAL }}</div>
+                <div class="summary-label">Critical Risk</div>
+            </div>
+            <div class="summary-card" style="border-top: 3px solid var(--accent-orange);">
+                <div class="summary-val" style="color: var(--accent-orange);">{{ summary.risk_counts.HIGH }}</div>
+                <div class="summary-label">High Risk</div>
+            </div>
+            <div class="summary-card" style="border-top: 3px solid var(--accent-yellow);">
+                <div class="summary-val" style="color: var(--accent-yellow);">{{ summary.risk_counts.MEDIUM }}</div>
+                <div class="summary-label">Medium Risk</div>
+            </div>
+            <div class="summary-card" style="border-top: 3px solid var(--accent-green);">
+                <div class="summary-val" style="color: var(--accent-green);">{{ summary.risk_counts.LOW }}</div>
+                <div class="summary-label">Secure / Low</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Add Profile Form -->
+            <div class="glass-card" style="height: fit-content;">
+                <h2 class="card-title">➕ Profile Wi-Fi Network</h2>
+                <form action="{{ url_for('add_profile') }}" method="POST">
+                    <div class="form-group">
+                        <label for="ssid">SSID (Network Name)</label>
+                        <input type="text" id="ssid" name="ssid" class="form-control" placeholder="e.g. Home_WiFi_5G" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="security">Security Type</label>
+                        <select id="security" name="security" class="form-control" required>
+                            <option value="Open">Open (No Security)</option>
+                            <option value="WEP">WEP (Insecure)</option>
+                            <option value="WPA">WPA</option>
+                            <option value="WPA2" selected>WPA2</option>
+                            <option value="WPA3">WPA3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="encryption">Encryption Protocol</label>
+                        <select id="encryption" name="encryption" class="form-control" required>
+                            <option value="None">None</option>
+                            <option value="TKIP">TKIP</option>
+                            <option value="AES" selected>AES (CCMP)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wps">WPS Status</label>
+                        <select id="wps" name="wps" class="form-control" required>
+                            <option value="Enabled">Enabled</option>
+                            <option value="Disabled" selected>Disabled</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password_strength">Password Strength Classification</label>
+                        <select id="password_strength" name="password_strength" class="form-control" required>
+                            <option value="Weak">Weak</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Strong" selected>Strong</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Evaluate & Save Profile</button>
+                </form>
+            </div>
+
+            <!-- Right Column: Profiles & Comprehensive Risk Cards -->
+            <div>
+                <h2 class="card-title" style="margin-bottom: 1.5rem;">
+                    🛡️ Evaluated Security Profiles
+                </h2>
+
+                {% if not evaluated_profiles %}
+                    <div class="glass-card" style="text-align: center; color: var(--text-muted); padding: 3rem 1.5rem;">
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">No Wi-Fi profiles added yet.</p>
+                        <p style="font-size: 0.9rem;">Fill out the profile form on the left to analyze a network.</p>
+                    </div>
+                {% else %}
+                    {% for p in evaluated_profiles %}
+                        <div class="risk-card level-{{ p.risk_level }}">
+                            <div class="risk-card-header">
+                                <div class="risk-card-title">
+                                    📶 {{ p.ssid }}
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <span class="badge-risk badge-{{ p.risk_level }}">{{ p.risk_level }} RISK ({{ p.score }}/100)</span>
+                                    <form action="{{ url_for('delete_profile', ssid=p.ssid) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete profile for {{ p.ssid }}?');">
+                                        <button type="submit" class="delete-btn" title="Delete Profile">🗑️</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="specs-grid">
+                                <div class="spec-item">
+                                    <label>SECURITY</label>
+                                    <span>{{ p.security }}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <label>ENCRYPTION</label>
+                                    <span>{{ p.encryption }}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <label>WPS</label>
+                                    <span>{{ p.wps }}</span>
+                                </div>
+                                <div class="spec-item">
+                                    <label>PASSWORD</label>
+                                    <span>{{ p.password_strength }}</span>
+                                </div>
+                            </div>
+
+                            <div class="vulnerabilities-section">
+                                <div class="section-title">Identified Vulnerability Patterns</div>
+                                {% if p.patterns %}
+                                    {% for v in p.patterns %}
+                                        <div class="vuln-tag">
+                                            <strong>[{{ v.severity }}] {{ v.title }}:</strong> {{ v.description }}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div style="font-size: 0.88rem; color: var(--accent-green); font-weight: 500;">
+                                        ✅ No high-severity vulnerability patterns identified.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <div class="section-title">Recommendations</div>
+                                {% for rec in p.recommendations %}
+                                    <div class="rec-item">{{ rec }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

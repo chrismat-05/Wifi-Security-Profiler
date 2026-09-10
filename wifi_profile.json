@@ -1,0 +1,23 @@
+[
+    {
+        "ssid": "KJU Student",
+        "security": "Open",
+        "encryption": "None",
+        "wps": "Disabled",
+        "password_strength": "Strong"
+    },
+    {
+        "ssid": "Test_Network",
+        "security": "WPA2",
+        "encryption": "AES",
+        "wps": "Disabled",
+        "password_strength": "Strong"
+    },
+    {
+        "ssid": "CoffeeShop_Free_WiFi",
+        "security": "Open",
+        "encryption": "None",
+        "wps": "Enabled",
+        "password_strength": "Weak"
+    }
+]

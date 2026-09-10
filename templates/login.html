@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Wi-Fi Security Profiler</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="glass-card auth-box">
+            <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+                📶 Wi-Fi Security Profiler
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
+                <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="form-login" action="{{ url_for('login') }}" method="POST">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" name="username" class="form-control" placeholder="Enter your username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+
+            <!-- Signup Form (hidden by default) -->
+            <form id="form-signup" action="{{ url_for('signup') }}" method="POST" style="display: none;">
+                <div class="form-group">
+                    <label for="signup-username">New Username</label>
+                    <input type="text" id="signup-username" name="username" class="form-control" placeholder="Choose a username (min 3 chars)" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">New Password</label>
+                    <input type="password" id="signup-password" name="password" class="form-control" placeholder="Choose a password (min 4 chars)" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn-primary" style="background: linear-gradient(135deg, #11998e, #38ef7d);">Create Account</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+            const loginForm = document.getElementById('form-login');
+            const signupForm = document.getElementById('form-signup');
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
