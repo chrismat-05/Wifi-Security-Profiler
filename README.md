@@ -1,10 +1,10 @@
-# 📶 Wi-Fi Security Profiler
+# Wi-Fi Security Profiler
 
 An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, internal web login / captive portal probing, rule-based vulnerability pattern detection, risk level classification, SHA-256 user authentication, and a modern dark cybersecurity web interface built with Flask.
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 ### Hardware Auto-Detection & Captive Portal Probing
 - **Live Connected Wi-Fi Detection**: Queries active wireless interface for SSID, Authentication, Cipher, Signal Strength, BSSID, and Band.
@@ -21,7 +21,7 @@ An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, i
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 Wifi Security Profiler/
@@ -43,7 +43,7 @@ Wifi Security Profiler/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - Python 3.8 or higher installed on your machine.
@@ -69,5 +69,5 @@ python main.py
 
 ---
 
-## 🛡️ License
+## License
 Distributed under the MIT License.

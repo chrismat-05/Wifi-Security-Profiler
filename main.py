@@ -152,15 +152,15 @@ def main():
 
     while True:
         options = [
-            "⚡ Auto-Detect & Analyze Connected Wi-Fi",
-            "🔍 Scan & Analyze Nearby Wi-Fi Networks",
-            "✍️ Manually Analyze Wi-Fi Details",
-            "📊 View All Analyzed Risk Summaries",
+            "Auto-Detect & Analyze Connected Wi-Fi",
+            "Scan & Analyze Nearby Wi-Fi Networks",
+            "Manually Analyze Wi-Fi Details",
+            "View All Analyzed Risk Summaries",
             "Exit CLI"
         ]
         choice = get_choice("\nMain Menu - Select an option: ", options)
 
-        if choice == "⚡ Auto-Detect & Analyze Connected Wi-Fi":
+        if choice == "Auto-Detect & Analyze Connected Wi-Fi":
             print("\nScanning active network interface & probing for captive portal...")
             detected = detect_connected_wifi()
             if not detected.get("connected"):
@@ -180,7 +180,7 @@ def main():
                 display_evaluated_profile(eval_res)
                 save_profile_to_list(raw_profile)
 
-        elif choice == "🔍 Scan & Analyze Nearby Wi-Fi Networks":
+        elif choice == "Scan & Analyze Nearby Wi-Fi Networks":
             print("\nScanning visible nearby Wi-Fi networks...")
             nearby = scan_nearby_networks()
             if not nearby:
@@ -192,13 +192,13 @@ def main():
                     display_evaluated_profile(eval_res)
                     save_profile_to_list(net)
 
-        elif choice == "✍️ Manually Analyze Wi-Fi Details":
+        elif choice == "Manually Analyze Wi-Fi Details":
             raw_profile = collect_wifi_profile()
             eval_res = evaluate_wifi_risk(raw_profile)
             display_evaluated_profile(eval_res)
             save_profile_to_list(raw_profile)
 
-        elif choice == "📊 View All Analyzed Risk Summaries":
+        elif choice == "View All Analyzed Risk Summaries":
             profiles = load_all_profiles()
             if not profiles:
                 print("\nNo analyzed Wi-Fi profiles found.")

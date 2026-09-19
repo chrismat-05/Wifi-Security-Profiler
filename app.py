@@ -166,7 +166,7 @@ def auto_detect_and_add():
     
     msg = f"Analyzed active Wi-Fi '{ssid}'! Risk Level: [{eval_res['risk_level']}]."
     if captive_portal == "Detected":
-        msg += " ⚠️ Internal Web Login / Captive Portal Detected!"
+        msg += " Internal Web Login / Captive Portal Detected!"
     flash(msg, "success" if eval_res['risk_level'] in ['LOW', 'MEDIUM'] else "warning")
 
     return redirect(url_for('dashboard'))

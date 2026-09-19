@@ -11,10 +11,10 @@
         <!-- Header Nav -->
         <header class="header">
             <div class="logo">
-                📶 Wi-Fi Security Profiler
+                Wi-Fi Security Profiler
             </div>
             <div class="user-info">
-                <span class="username-tag">👤 {{ username }}</span>
+                <span class="username-tag">{{ username }}</span>
                 <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
             </div>
         </header>
@@ -34,7 +34,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
                 <div>
                     <h3 style="font-size: 1.1rem; color: #ffffff; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
-                        📡 Live System Wi-Fi Status
+                        Live System Wi-Fi Status
                     </h3>
                     {% if active_wifi.connected %}
                         <p style="font-size: 0.95rem; color: var(--text-muted);">
@@ -54,13 +54,13 @@
                     {% if active_wifi.connected %}
                         <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
                             <button type="submit" class="btn-primary" style="padding: 0.65rem 1.25rem; font-size: 0.9rem; width: auto;">
-                                ⚡ Analyze Connected Network
+                                Analyze Connected Network
                             </button>
                         </form>
                     {% endif %}
                     <form action="{{ url_for('scan_and_add') }}" method="POST" style="margin: 0;">
                         <button type="submit" class="btn-logout" style="padding: 0.65rem 1.25rem; font-size: 0.9rem; width: auto;">
-                            🔍 Scan Nearby Access Points
+                            Scan Nearby Access Points
                         </button>
                     </form>
                 </div>
@@ -94,7 +94,7 @@
         <!-- Evaluated Security Profiles List -->
         <div>
             <h2 class="card-title" style="margin-bottom: 1.5rem;">
-                🛡️ Evaluated Security Profiles
+                Evaluated Security Profiles
             </h2>
 
             {% if not evaluated_profiles %}
@@ -105,13 +105,13 @@
                         {% if active_wifi.connected %}
                             <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
                                 <button type="submit" class="btn-primary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem; width: auto;">
-                                    ⚡ Analyze Connected Network
+                                    Analyze Connected Network
                                 </button>
                             </form>
                         {% endif %}
                         <form action="{{ url_for('scan_and_add') }}" method="POST" style="margin: 0;">
                             <button type="submit" class="btn-logout" style="padding: 0.7rem 1.5rem; font-size: 0.9rem; width: auto;">
-                                🔍 Scan Nearby Access Points
+                                Scan Nearby Access Points
                             </button>
                         </form>
                     </div>
@@ -121,12 +121,12 @@
                     <div class="risk-card level-{{ p.risk_level }}">
                         <div class="risk-card-header">
                             <div class="risk-card-title">
-                                📶 {{ p.ssid }}
+                                {{ p.ssid }}
                             </div>
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
                                 <span class="badge-risk badge-{{ p.risk_level }}">{{ p.risk_level }} RISK ({{ p.score }}/100)</span>
                                 <form action="{{ url_for('delete_profile', ssid=p.ssid) }}" method="POST" style="display: inline;" onsubmit="return confirm('Remove profile for {{ p.ssid }}?');">
-                                    <button type="submit" class="delete-btn" title="Remove Profile">🗑️</button>
+                                    <button type="submit" class="delete-btn" title="Remove Profile">Delete</button>
                                 </form>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                                 {% endfor %}
                             {% else %}
                                 <div style="font-size: 0.88rem; color: var(--risk-low); font-weight: 500;">
-                                    ✅ No high-severity vulnerability patterns identified.
+                                    No high-severity vulnerability patterns identified.
                                 </div>
                             {% endif %}
                         </div>

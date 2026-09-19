@@ -6,5 +6,21 @@
         "wps": "Disabled",
         "password_strength": "Weak",
         "captive_portal": "Detected"
+    },
+    {
+        "ssid": "KJU-Staff-NET",
+        "security": "Open",
+        "encryption": "None",
+        "wps": "Disabled",
+        "password_strength": "Weak",
+        "captive_portal": "Detected"
+    },
+    {
+        "ssid": "Chris's S23",
+        "security": "WPA3",
+        "encryption": "AES",
+        "wps": "Disabled",
+        "password_strength": "Medium",
+        "captive_portal": "None"
     }
 ]
