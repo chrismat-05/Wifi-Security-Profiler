@@ -13,10 +13,13 @@
     <div class="container">
         <!-- Header Nav -->
         <header class="header">
-            <div class="logo">
-                Wi-Fi Security Profiler
-            </div>
+            <a href="{{ url_for('index') }}" class="logo-link">
+                <div class="logo">
+                    Wi-Fi Security Profiler
+                </div>
+            </a>
             <div class="user-info">
+                <a href="{{ url_for('index') }}" class="nav-item" style="margin-right: 0.5rem;">Home</a>
                 <span class="username-tag">{{ username }}</span>
                 <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
             </div>

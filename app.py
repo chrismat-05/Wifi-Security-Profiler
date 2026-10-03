@@ -47,19 +47,19 @@ def save_profiles(profiles):
 
 @app.route('/')
 def index():
-    """Redirect to dashboard if logged in, else login page."""
-    if 'username' in session:
-        return redirect(url_for('dashboard'))
-    return redirect(url_for('login'))
+    """Home landing page with comprehensive tool description and analysis CTA."""
+    return render_template('home.html', logged_in=('username' in session), username=session.get('username'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handles user login."""
+    """Handles user login with redirection back to original target if provided."""
     if 'username' in session:
         return redirect(url_for('dashboard'))
 
     error = None
+    next_url = request.args.get('next') or request.form.get('next') or url_for('dashboard')
+
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
@@ -68,11 +68,11 @@ def login():
         if valid:
             session['username'] = user_data['username']
             flash("Logged in successfully!", "success")
-            return redirect(url_for('dashboard'))
+            return redirect(next_url)
         else:
             error = "Invalid username or password. Please try again or Sign Up."
 
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, next_url=next_url)
 
 
 @app.route('/signup', methods=['POST'])
@@ -80,14 +80,15 @@ def signup():
     """Handles new user registration."""
     username = request.form.get('username', '').strip()
     password = request.form.get('password', '').strip()
+    next_url = request.form.get('next') or url_for('dashboard')
 
     ok, message = register_user(username, password)
     if ok:
         flash(message, "success")
+        return redirect(url_for('login', next=next_url))
     else:
         flash(message, "danger")
-
-    return redirect(url_for('login'))
+        return redirect(url_for('login', next=next_url))
 
 
 @app.route('/logout')
@@ -95,15 +96,15 @@ def logout():
     """Logs out current user."""
     session.pop('username', None)
     flash("You have been logged out.", "info")
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 
 @app.route('/dashboard')
 def dashboard():
     """Main dashboard displaying live Wi-Fi status, scan controls, and evaluated security profile cards."""
     if 'username' not in session:
-        flash("Please log in to access the dashboard.", "warning")
-        return redirect(url_for('login'))
+        flash("Please log in to access the Wi-Fi analysis dashboard.", "warning")
+        return redirect(url_for('login', next=url_for('dashboard')))
 
     raw_profiles = load_all_profiles()
     summary = batch_process_profiles(raw_profiles)

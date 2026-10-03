@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
@@ -448,4 +449,265 @@ select.form-control option {
     background: var(--risk-critical);
     color: #ffffff;
     border-color: var(--risk-critical);
+}
+
+/* Landing Page & Home Styles */
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.nav-item:hover {
+    color: var(--text-white);
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+}
+
+.hero-section {
+    text-align: center;
+    padding: 3.5rem 1rem 3rem 1rem;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 0.35rem 0.95rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-grey);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1.25;
+    color: var(--text-white);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+}
+
+.hero-description {
+    font-size: 1.12rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 2.25rem;
+}
+
+.hero-cta-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+    display: inline-block;
+    padding: 0.85rem 1.85rem;
+    background: var(--text-white);
+    color: #000000;
+    font-weight: 700;
+    font-size: 0.98rem;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #ffffff;
+    transition: all 0.2s ease;
+}
+
+.btn-hero-primary:hover {
+    background: #e5e5e5;
+    border-color: #e5e5e5;
+    transform: translateY(-1px);
+}
+
+.btn-hero-secondary {
+    display: inline-block;
+    padding: 0.85rem 1.75rem;
+    background: var(--btn-bg);
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: 0.98rem;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid var(--border-grey);
+    transition: all 0.2s ease;
+}
+
+.btn-hero-secondary:hover {
+    background: var(--btn-hover);
+    border-color: #525252;
+}
+
+.telemetry-card {
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2.5rem;
+}
+
+.telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.telemetry-item {
+    border-left: 2px solid var(--card-border);
+    padding-left: 1rem;
+}
+
+.telemetry-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+}
+
+.telemetry-val {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-white);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.25rem;
+}
+
+.telemetry-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.capabilities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+}
+
+.capability-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1.6rem 1.4rem;
+    transition: all 0.2s ease;
+}
+
+.capability-card:hover {
+    border-color: var(--card-hover-border);
+    transform: translateY(-2px);
+}
+
+.capability-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+}
+
+.capability-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: #1f1f1f;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-grey);
+}
+
+.capability-header h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+.capability-card p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+}
+
+.step-card {
+    background: #0f0f0f;
+    border: 1px solid var(--border-grey);
+    border-radius: 8px;
+    padding: 1.35rem;
+}
+
+.step-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    background: #262626;
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+}
+
+.step-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+}
+
+.step-text {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+}
+
+.cta-banner {
+    background: #141414;
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.footer {
+    border-top: 1px solid var(--card-border);
+    padding: 2rem 0 1rem 0;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }

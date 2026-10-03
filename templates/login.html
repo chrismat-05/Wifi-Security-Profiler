@@ -40,6 +40,7 @@
 
             <!-- Login Form -->
             <form id="form-login" action="{{ url_for('login') }}" method="POST">
+                <input type="hidden" name="next" value="{{ next_url or '' }}">
                 <div class="form-group">
                     <label for="login-username">Username</label>
                     <input type="text" id="login-username" name="username" class="form-control" placeholder="Enter your username" required autocomplete="username">
@@ -53,6 +54,7 @@
 
             <!-- Signup Form (hidden by default) -->
             <form id="form-signup" action="{{ url_for('signup') }}" method="POST" style="display: none;">
+                <input type="hidden" name="next" value="{{ next_url or '' }}">
                 <div class="form-group">
                     <label for="signup-username">New Username</label>
                     <input type="text" id="signup-username" name="username" class="form-control" placeholder="Choose a username (min 3 chars)" required autocomplete="username">
@@ -63,6 +65,10 @@
                 </div>
                 <button type="submit" class="btn-primary">Create Account</button>
             </form>
+
+            <div style="text-align: center; margin-top: 1.25rem;">
+                <a href="{{ url_for('index') }}" style="color: var(--text-muted); font-size: 0.88rem; text-decoration: none;">&larr; Back to Home</a>
+            </div>
 
         </div>
     </div>

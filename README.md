@@ -37,6 +37,7 @@ Wifi Security Profiler/
 │   └── css/
 │       └── style.css     # Cybersecurity Dark Theme CSS
 └── templates/
+    ├── home.html         # Landing page & tool overview template
     ├── login.html        # Sign In & Sign Up template
     └── dashboard.html    # Dashboard & Risk Cards template
 ```
