@@ -47,7 +47,7 @@
                             Connected Network: <strong style="color: #ffffff; font-family: 'JetBrains Mono', monospace;">{{ active_wifi.ssid }}</strong> 
                             | Signal: <strong>{{ active_wifi.signal }}</strong> 
                             | Security: <strong>{{ active_wifi.security }} ({{ active_wifi.encryption }})</strong>
-                            | Web Login: <strong style="color: {% if active_wifi.captive_portal == 'Detected' %}var(--risk-high){% else %}var(--risk-low){% endif %};">{{ active_wifi.captive_portal }}</strong>
+                            | Web Login: <strong class="{% if active_wifi.captive_portal == 'Detected' %}portal-detected{% else %}portal-clear{% endif %}">{{ active_wifi.captive_portal }}</strong>
                         </p>
                     {% else %}
                         <p style="font-size: 0.95rem; color: var(--text-muted);">
@@ -148,7 +148,7 @@
                             </div>
                             <div class="spec-item">
                                 <label>WEB LOGIN</label>
-                                <span style="color: {% if p.captive_portal == 'Detected' %}var(--risk-high){% else %}#ffffff{% endif %};">{{ p.captive_portal }}</span>
+                                <span class="{% if p.captive_portal == 'Detected' %}portal-detected{% else %}portal-default{% endif %}">{{ p.captive_portal }}</span>
                             </div>
                             <div class="spec-item">
                                 <label>WPS</label>

@@ -390,6 +390,18 @@ select.form-control option {
     color: var(--text-white);
 }
 
+.portal-detected {
+    color: var(--risk-high) !important;
+}
+
+.portal-clear {
+    color: var(--risk-low) !important;
+}
+
+.portal-default {
+    color: #ffffff;
+}
+
 .vulnerabilities-section {
     margin-bottom: 1rem;
 }
