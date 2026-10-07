@@ -1,17 +1,18 @@
-# 📶 Wi-Fi Security Profiler (Phase 1 & Phase 2)
+# 📶 Wi-Fi Security Profiler
 
-An interactive Wi-Fi Security Analysis tool featuring input validation, rule-based vulnerability pattern detection, risk level classification, SHA-256 user authentication, and a modern dark cybersecurity web interface built with Flask.
+An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, internal web login / captive portal probing, rule-based vulnerability pattern detection, risk level classification, SHA-256 user authentication, and a modern dark cybersecurity web interface built with Flask.
 
 ---
 
 ## 🌟 Key Features
 
-### Phase 1: Core Data Collection & Validation
-- **Structured Data Storage**: Stores Wi-Fi profile metadata (SSID, Security Type, Encryption, WPS Status, Password Strength) in JSON format.
-- **Strict Input Validation**: Validates all parameters to prevent invalid inputs.
+### Hardware Auto-Detection & Captive Portal Probing
+- **Live Connected Wi-Fi Detection**: Queries active wireless interface for SSID, Authentication, Cipher, Signal Strength, BSSID, and Band.
+- **Captive Portal / Internal Web Login Detection**: Probes standard network endpoints to detect internal splash pages or web login redirections (e.g. open networks requiring captive portal authentication).
+- **Nearby Wi-Fi Scanner**: Scans and displays visible nearby Wi-Fi access points.
 
-### Phase 2: Advanced Analysis & Web Deployment
-- **Vulnerability Pattern Engine**: Identifies specific security vulnerabilities (Open/Unencrypted networks, obsolete WEP protocol, legacy TKIP ciphers, WPS PIN brute-force risks, and weak passwords).
+### Advanced Analysis & Web Interface
+- **Vulnerability Pattern Engine**: Identifies specific security vulnerabilities (Open/Unencrypted networks, Captive Portal credential risks, obsolete WEP protocol, legacy TKIP ciphers, WPS PIN brute-force risks, and weak passwords).
 - **Risk Level Classification**: Computes a 0–100 risk score and assigns a risk category (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`).
 - **Actionable Recommendations**: Generates tailored security hardening steps for each profile.
 - **User Signup & Authentication**: Multi-user registration and login with SHA-256 password hashing.
@@ -26,7 +27,8 @@ An interactive Wi-Fi Security Analysis tool featuring input validation, rule-bas
 Wifi Security Profiler/
 │── app.py                # Flask Web Server & API Routes
 │── auth.py               # Signup, Login & Hashing Module
-│── risk_evaluator.py     # Pattern Detection & Risk Engine
+│── wifi_detector.py      # Real-time Wi-Fi & Captive Portal Detection
+│── risk_evaluator.py     # Vulnerability Pattern & Risk Engine
 │── main.py               # Terminal CLI Application
 │── requirements.txt      # Python dependencies
 │── .gitignore            # Git ignore rules

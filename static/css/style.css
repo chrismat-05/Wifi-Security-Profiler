@@ -1,18 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-    --bg-dark: #080c14;
-    --card-bg: rgba(16, 24, 40, 0.75);
-    --card-border: rgba(0, 242, 254, 0.15);
-    --card-hover-border: rgba(0, 242, 254, 0.4);
-    --text-main: #f0f4f8;
-    --text-muted: #94a3b8;
-    --accent-cyan: #00f2fe;
-    --accent-blue: #4facfe;
-    --accent-green: #38ef7d;
-    --accent-red: #ff4b2b;
-    --accent-orange: #ff8c00;
-    --accent-yellow: #f7b733;
+    --bg-black: #0a0a0a;
+    --card-bg: #141414;
+    --card-border: #262626;
+    --card-hover-border: #404040;
+    --text-white: #ffffff;
+    --text-muted: #a3a3a3;
+    --border-grey: #333333;
+    --btn-bg: #262626;
+    --btn-hover: #333333;
+    
+    /* Status & Risk Colors ONLY */
+    --risk-critical: #ef4444;
+    --risk-high: #f97316;
+    --risk-medium: #eab308;
+    --risk-low: #22c55e;
 }
 
 * {
@@ -22,12 +25,9 @@
 }
 
 body {
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-dark);
-    background-image: 
-        radial-gradient(circle at 15% 15%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(79, 172, 254, 0.08) 0%, transparent 40%);
-    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-black);
+    color: var(--text-white);
     min-height: 100vh;
     line-height: 1.6;
 }
@@ -43,25 +43,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.5rem;
+    padding: 1.2rem 1.75rem;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
+    border-radius: 12px;
     margin-bottom: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .logo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: 700;
+    color: var(--text-white);
     letter-spacing: 0.5px;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .user-info {
@@ -72,40 +68,39 @@ body {
 
 .username-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9rem;
-    color: var(--accent-cyan);
-    background: rgba(0, 242, 254, 0.1);
+    font-size: 0.88rem;
+    color: var(--text-white);
+    background: #1f1f1f;
     padding: 0.35rem 0.85rem;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 242, 254, 0.25);
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
 }
 
 .btn-logout {
-    color: #ff6b6b;
+    color: var(--text-white);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 500;
+    font-size: 0.88rem;
     padding: 0.4rem 1rem;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 6px;
+    background: var(--btn-bg);
+    border: 1px solid var(--border-grey);
     transition: all 0.2s ease;
 }
 
 .btn-logout:hover {
-    background: rgba(255, 107, 107, 0.15);
-    box-shadow: 0 0 12px rgba(255, 107, 107, 0.3);
+    background: var(--btn-hover);
+    border-color: #525252;
 }
 
-/* Glassmorphism Card */
+/* Monochrome Card */
 .glass-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(12px);
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 1.75rem;
     margin-bottom: 2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .glass-card:hover {
@@ -113,19 +108,19 @@ body {
 }
 
 .card-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #ffffff;
+    color: var(--text-white);
 }
 
 /* Alerts */
 .alert {
     padding: 0.85rem 1.25rem;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 1.5rem;
     font-weight: 500;
     display: flex;
@@ -134,21 +129,27 @@ body {
 }
 
 .alert-success {
-    background: rgba(56, 239, 125, 0.12);
-    border: 1px solid rgba(56, 239, 125, 0.3);
-    color: #38ef7d;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: var(--risk-low);
 }
 
 .alert-danger {
-    background: rgba(255, 75, 43, 0.12);
-    border: 1px solid rgba(255, 75, 43, 0.3);
-    color: #ff4b2b;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--risk-critical);
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--risk-medium);
 }
 
 .alert-info {
-    background: rgba(0, 242, 254, 0.12);
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    color: var(--accent-cyan);
+    background: #1f1f1f;
+    border: 1px solid var(--border-grey);
+    color: var(--text-white);
 }
 
 /* Auth Page */
@@ -161,13 +162,13 @@ body {
 
 .auth-box {
     width: 100%;
-    max-width: 440px;
+    max-width: 420px;
 }
 
 .auth-tabs {
     display: flex;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--card-border);
 }
 
 .auth-tab {
@@ -182,8 +183,8 @@ body {
 }
 
 .auth-tab.active {
-    color: var(--accent-cyan);
-    border-bottom-color: var(--accent-cyan);
+    color: var(--text-white);
+    border-bottom-color: var(--text-white);
 }
 
 .form-group {
@@ -193,7 +194,7 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 0.4rem;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 500;
 }
@@ -201,42 +202,41 @@ body {
 .form-control {
     width: 100%;
     padding: 0.75rem 1rem;
-    background: rgba(8, 12, 20, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: var(--text-main);
+    background: #0d0d0d;
+    border: 1px solid var(--border-grey);
+    border-radius: 6px;
+    color: var(--text-white);
     font-family: inherit;
     font-size: 0.95rem;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease;
 }
 
 .form-control:focus {
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 10px rgba(0, 242, 254, 0.25);
+    border-color: #666666;
 }
 
 select.form-control option {
-    background-color: #0d1322;
+    background-color: #141414;
     color: #ffffff;
 }
 
 .btn-primary {
     width: 100%;
     padding: 0.85rem;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    color: #040914;
-    font-weight: 700;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
+    background: #262626;
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-grey);
+    border-radius: 6px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 242, 254, 0.35);
+    background: #333333;
+    border-color: #525252;
 }
 
 /* Dashboard Layout */
@@ -261,9 +261,9 @@ select.form-control option {
 }
 
 .summary-card {
-    background: rgba(16, 24, 40, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
     padding: 1rem;
     text-align: center;
 }
@@ -275,7 +275,7 @@ select.form-control option {
 }
 
 .summary-label {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -284,38 +284,28 @@ select.form-control option {
 
 /* Risk Cards */
 .risk-card {
-    background: rgba(16, 24, 40, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 5px solid #ccc;
-    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 4px solid #525252;
+    border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    transition: all 0.2s ease;
-}
-
-.risk-card:hover {
-    transform: translateY(-2px);
 }
 
 .risk-card.level-CRITICAL {
-    border-left-color: var(--accent-red);
-    box-shadow: 0 4px 20px rgba(255, 75, 43, 0.15);
+    border-left-color: var(--risk-critical);
 }
 
 .risk-card.level-HIGH {
-    border-left-color: var(--accent-orange);
-    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.15);
+    border-left-color: var(--risk-high);
 }
 
 .risk-card.level-MEDIUM {
-    border-left-color: var(--accent-yellow);
-    box-shadow: 0 4px 20px rgba(247, 183, 51, 0.15);
+    border-left-color: var(--risk-medium);
 }
 
 .risk-card.level-LOW {
-    border-left-color: var(--accent-green);
-    box-shadow: 0 4px 20px rgba(56, 239, 125, 0.15);
+    border-left-color: var(--risk-low);
 }
 
 .risk-card-header {
@@ -326,9 +316,9 @@ select.form-control option {
 }
 
 .risk-card-title {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text-white);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -336,7 +326,7 @@ select.form-control option {
 
 .badge-risk {
     padding: 0.3rem 0.75rem;
-    border-radius: 20px;
+    border-radius: 4px;
     font-weight: 700;
     font-size: 0.78rem;
     font-family: 'JetBrains Mono', monospace;
@@ -345,41 +335,38 @@ select.form-control option {
 }
 
 .badge-CRITICAL {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    color: #fff;
-    box-shadow: 0 0 10px rgba(255, 65, 108, 0.4);
+    background: var(--risk-critical);
+    color: #ffffff;
 }
 
 .badge-HIGH {
-    background: linear-gradient(135deg, #ff8c00, #e65100);
-    color: #fff;
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.4);
+    background: var(--risk-high);
+    color: #ffffff;
 }
 
 .badge-MEDIUM {
-    background: linear-gradient(135deg, #f7b733, #fc4a1a);
-    color: #111;
-    box-shadow: 0 0 10px rgba(247, 183, 51, 0.4);
+    background: var(--risk-medium);
+    color: #000000;
 }
 
 .badge-LOW {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-    color: #041a0d;
-    box-shadow: 0 0 10px rgba(56, 239, 125, 0.4);
+    background: var(--risk-low);
+    color: #000000;
 }
 
 .specs-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0.75rem;
-    background: rgba(0, 0, 0, 0.3);
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
     padding: 0.85rem;
-    border-radius: 8px;
+    border-radius: 6px;
     margin-bottom: 1.2rem;
     font-size: 0.85rem;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .specs-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -387,15 +374,15 @@ select.form-control option {
 
 .spec-item label {
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     display: block;
-
+    text-transform: uppercase;
 }
 
 .spec-item span {
     font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
-    color: #ffffff;
+    color: var(--text-white);
 }
 
 .vulnerabilities-section {
@@ -403,7 +390,7 @@ select.form-control option {
 }
 
 .section-title {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--text-muted);
@@ -412,9 +399,9 @@ select.form-control option {
 }
 
 .vuln-tag {
-    background: rgba(255, 75, 43, 0.1);
-    border: 1px solid rgba(255, 75, 43, 0.25);
-    color: #ff7675;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
     padding: 0.4rem 0.75rem;
     border-radius: 6px;
     font-size: 0.85rem;
@@ -427,7 +414,7 @@ select.form-control option {
 
 .rec-item {
     font-size: 0.88rem;
-    color: var(--text-main);
+    color: var(--text-white);
     padding: 0.35rem 0;
     display: flex;
     align-items: flex-start;
@@ -435,8 +422,9 @@ select.form-control option {
 }
 
 .rec-item::before {
-    content: "🛡️";
-    font-size: 0.85rem;
+    content: "•";
+    color: var(--text-muted);
+    font-weight: bold;
 }
 
 .delete-btn {
@@ -449,5 +437,5 @@ select.form-control option {
 }
 
 .delete-btn:hover {
-    color: var(--accent-red);
+    color: var(--risk-critical);
 }

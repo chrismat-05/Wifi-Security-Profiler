@@ -1,12 +1,13 @@
 """
 Risk Evaluator Module for Wi-Fi Security Profiler.
 Processes Wi-Fi profile data through conditions and loops to identify
-vulnerability patterns, classify risk levels, and generate actionable recommendations.
+vulnerability patterns (including captive portals / internal web logins),
+classify risk levels, and generate actionable security recommendations.
 """
 
 def identify_vulnerability_patterns(wifi_profile):
     """
-    Identifies simple security risk patterns from Wi-Fi profile dictionary.
+    Identifies security risk patterns from Wi-Fi profile dictionary.
     Returns a list of pattern description dictionaries.
     """
     patterns = []
@@ -15,6 +16,7 @@ def identify_vulnerability_patterns(wifi_profile):
     encryption = wifi_profile.get("encryption", "").strip()
     wps = wifi_profile.get("wps", "").strip()
     password_strength = wifi_profile.get("password_strength", "").strip()
+    captive_portal = wifi_profile.get("captive_portal", "").strip()
 
     # Pattern 1: Unencrypted / Open Network
     if security == "Open" or encryption == "None":
@@ -22,19 +24,28 @@ def identify_vulnerability_patterns(wifi_profile):
             "id": "OPEN_NETWORK",
             "severity": "CRITICAL",
             "title": "Unencrypted Open Network",
-            "description": "Network traffic is unencrypted and vulnerable to eavesdropping and MITM attacks."
+            "description": "Network traffic is unencrypted and vulnerable to wireless eavesdropping and MITM packet sniffing."
         })
 
-    # Pattern 2: WEP Protocol (Obsolete & Severely Broken)
+    # Pattern 2: Captive Portal / Internal Web Login
+    if captive_portal == "Detected":
+        patterns.append({
+            "id": "CAPTIVE_PORTAL",
+            "severity": "HIGH",
+            "title": "Internal Web Login / Captive Portal Detected",
+            "description": "Network requires internal web page authentication. Unencrypted login portals expose credentials to over-the-air interception."
+        })
+
+    # Pattern 3: WEP Protocol (Obsolete & Severely Broken)
     if security == "WEP":
         patterns.append({
             "id": "WEP_DEPRECATED",
             "severity": "CRITICAL",
             "title": "Obsolete WEP Encryption",
-            "description": "WEP security uses weak RC4 cipher that can be easily cracked in minutes."
+            "description": "WEP security uses weak RC4 cipher that can be cracked in minutes."
         })
 
-    # Pattern 3: Legacy TKIP Encryption
+    # Pattern 4: Legacy TKIP Encryption
     if encryption == "TKIP":
         patterns.append({
             "id": "TKIP_LEGACY",
@@ -43,7 +54,7 @@ def identify_vulnerability_patterns(wifi_profile):
             "description": "TKIP encryption is deprecated and vulnerable to key recovery attacks."
         })
 
-    # Pattern 4: WPS Enabled Vulnerability
+    # Pattern 5: WPS Enabled Vulnerability
     if wps == "Enabled":
         patterns.append({
             "id": "WPS_ENABLED",
@@ -52,7 +63,7 @@ def identify_vulnerability_patterns(wifi_profile):
             "description": "WPS PIN feature is susceptible to brute-force attacks (Reaver/Pixie Dust)."
         })
 
-    # Pattern 5: Weak or Medium Password Strength
+    # Pattern 6: Weak or Medium Password Strength
     if password_strength == "Weak":
         patterns.append({
             "id": "WEAK_PASSWORD",
@@ -80,6 +91,7 @@ def classify_risk_level(wifi_profile, patterns):
     encryption = wifi_profile.get("encryption", "").strip()
     wps = wifi_profile.get("wps", "").strip()
     password_strength = wifi_profile.get("password_strength", "").strip()
+    captive_portal = wifi_profile.get("captive_portal", "").strip()
 
     score = 0
 
@@ -102,6 +114,10 @@ def classify_risk_level(wifi_profile, patterns):
         score += 20
     elif encryption == "AES":
         score += 0
+
+    # Captive Portal penalty
+    if captive_portal == "Detected":
+        score += 15
 
     # WPS penalty
     if wps == "Enabled":
@@ -141,11 +157,15 @@ def generate_recommendations(wifi_profile, patterns):
     encryption = wifi_profile.get("encryption", "").strip()
     wps = wifi_profile.get("wps", "").strip()
     password_strength = wifi_profile.get("password_strength", "").strip()
+    captive_portal = wifi_profile.get("captive_portal", "").strip()
 
     if security in ["Open", "WEP"]:
         recommendations.append("Upgrade security protocol immediately to WPA2-Personal or WPA3-Personal.")
     elif security == "WPA":
         recommendations.append("Upgrade from WPA to WPA2 or WPA3 for modern encryption standards.")
+
+    if captive_portal == "Detected":
+        recommendations.append("Verify web login page uses HTTPS. Avoid entering sensitive passwords over open Wi-Fi splash pages; use a VPN for encrypted tunneling.")
 
     if encryption in ["None", "TKIP"]:
         recommendations.append("Change Wi-Fi encryption settings to AES (CCMP).")
@@ -177,6 +197,7 @@ def evaluate_wifi_risk(wifi_profile):
         "encryption": wifi_profile.get("encryption", "Unknown"),
         "wps": wifi_profile.get("wps", "Unknown"),
         "password_strength": wifi_profile.get("password_strength", "Unknown"),
+        "captive_portal": wifi_profile.get("captive_portal", "None"),
         "risk_level": risk_level,
         "score": score,
         "patterns": patterns,

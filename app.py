@@ -1,7 +1,8 @@
 """
-Flask Web Application for Wi-Fi Security Profiler (Phase 2)
-Provides login/signup screen, dashboard with profile management,
-and interactive Comprehensive Risk Cards with cybersecurity design.
+Flask Web Application for Wi-Fi Security Profiler
+Provides login/signup screen, automated connected Wi-Fi analysis,
+nearby network scanning, internal web login / captive portal probing,
+and interactive Comprehensive Risk Cards.
 """
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
@@ -10,6 +11,7 @@ import json
 import secrets
 from auth import register_user, validate_user
 from risk_evaluator import evaluate_wifi_risk, batch_process_profiles
+from wifi_detector import detect_connected_wifi, scan_nearby_networks
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -58,8 +60,6 @@ def login():
         return redirect(url_for('dashboard'))
 
     error = None
-    success = None
-
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
@@ -72,7 +72,7 @@ def login():
         else:
             error = "Invalid username or password. Please try again or Sign Up."
 
-    return render_template('login.html', error=error, success=success)
+    return render_template('login.html', error=error)
 
 
 @app.route('/signup', methods=['POST'])
@@ -100,57 +100,58 @@ def logout():
 
 @app.route('/dashboard')
 def dashboard():
-    """Main dashboard displaying profile creation form and evaluated profiles."""
+    """Main dashboard displaying live Wi-Fi status, scan controls, and evaluated security profile cards."""
     if 'username' not in session:
         flash("Please log in to access the dashboard.", "warning")
         return redirect(url_for('login'))
 
     raw_profiles = load_all_profiles()
     summary = batch_process_profiles(raw_profiles)
+    active_wifi = detect_connected_wifi()
 
     return render_template('dashboard.html',
                            username=session['username'],
                            summary=summary,
-                           evaluated_profiles=summary['evaluated_profiles'])
+                           evaluated_profiles=summary['evaluated_profiles'],
+                           active_wifi=active_wifi)
 
 
-@app.route('/add_profile', methods=['POST'])
-def add_profile():
-    """Handles adding a new Wi-Fi profile and validating fields (Phase 1 & Phase 2)."""
+@app.route('/api/detect')
+def api_detect():
+    """API endpoint returning detected Wi-Fi data as JSON."""
+    if 'username' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    return jsonify(detect_connected_wifi())
+
+
+@app.route('/auto_detect_and_add', methods=['POST'])
+def auto_detect_and_add():
+    """Auto-detects connected Wi-Fi network & captive portal status, adding it to security profiles."""
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    ssid = request.form.get('ssid', '').strip()
-    security = request.form.get('security', '').strip()
-    encryption = request.form.get('encryption', '').strip()
-    wps = request.form.get('wps', '').strip()
-    password_strength = request.form.get('password_strength', '').strip()
-
-    # Validation
-    if not ssid:
-        flash("SSID cannot be empty.", "danger")
+    detected = detect_connected_wifi()
+    if not detected.get('connected'):
+        flash(detected.get('message', 'No active connected Wi-Fi interface detected.'), 'warning')
         return redirect(url_for('dashboard'))
 
-    valid_security = ["Open", "WEP", "WPA", "WPA2", "WPA3"]
-    valid_encryption = ["None", "TKIP", "AES"]
-    valid_wps = ["Enabled", "Disabled"]
-    valid_pw = ["Weak", "Medium", "Strong"]
-
-    if security not in valid_security or encryption not in valid_encryption or wps not in valid_wps or password_strength not in valid_pw:
-        flash("Invalid selection provided. Please choose valid options.", "danger")
-        return redirect(url_for('dashboard'))
+    ssid = detected.get('ssid')
+    security = detected.get('security', 'WPA2')
+    encryption = detected.get('encryption', 'AES')
+    wps = detected.get('wps', 'Disabled')
+    password_strength = detected.get('password_strength', 'Strong')
+    captive_portal = detected.get('captive_portal', 'None')
 
     new_profile = {
         "ssid": ssid,
         "security": security,
         "encryption": encryption,
         "wps": wps,
-        "password_strength": password_strength
+        "password_strength": password_strength,
+        "captive_portal": captive_portal
     }
 
     raw_profiles = load_all_profiles()
-    
-    # Overwrite if same SSID exists or append
     updated = False
     for i, p in enumerate(raw_profiles):
         if p.get("ssid", "").strip().lower() == ssid.lower():
@@ -160,10 +161,57 @@ def add_profile():
     if not updated:
         raw_profiles.append(new_profile)
 
-    if save_profiles(raw_profiles):
-        flash(f"Wi-Fi profile '{ssid}' evaluated and saved successfully!", "success")
-    else:
-        flash("Failed to save profile to disk.", "danger")
+    save_profiles(raw_profiles)
+    eval_res = evaluate_wifi_risk(new_profile)
+    
+    msg = f"Analyzed active Wi-Fi '{ssid}'! Risk Level: [{eval_res['risk_level']}]."
+    if captive_portal == "Detected":
+        msg += " ⚠️ Internal Web Login / Captive Portal Detected!"
+    flash(msg, "success" if eval_res['risk_level'] in ['LOW', 'MEDIUM'] else "warning")
+
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/scan_and_add', methods=['POST'])
+def scan_and_add():
+    """Scans all visible nearby Wi-Fi networks and adds them to evaluated profiles."""
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    nearby = scan_nearby_networks()
+    if not nearby:
+        flash("No visible nearby Wi-Fi networks detected during scan.", "warning")
+        return redirect(url_for('dashboard'))
+
+    raw_profiles = load_all_profiles()
+    added_count = 0
+
+    for net in nearby:
+        ssid = net.get('ssid')
+        if not ssid:
+            continue
+
+        new_profile = {
+            "ssid": ssid,
+            "security": net.get('security', 'WPA2'),
+            "encryption": net.get('encryption', 'AES'),
+            "wps": net.get('wps', 'Disabled'),
+            "password_strength": net.get('password_strength', 'Strong'),
+            "captive_portal": net.get('captive_portal', 'None')
+        }
+
+        updated = False
+        for i, p in enumerate(raw_profiles):
+            if p.get("ssid", "").strip().lower() == ssid.lower():
+                raw_profiles[i] = new_profile
+                updated = True
+                break
+        if not updated:
+            raw_profiles.append(new_profile)
+            added_count += 1
+
+    save_profiles(raw_profiles)
+    flash(f"Scanned & analyzed {len(nearby)} nearby Wi-Fi network(s)!", "success")
 
     return redirect(url_for('dashboard'))
 
@@ -178,9 +226,9 @@ def delete_profile(ssid):
     filtered = [p for p in raw_profiles if p.get("ssid", "").strip().lower() != ssid.strip().lower()]
 
     if save_profiles(filtered):
-        flash(f"Profile '{ssid}' deleted successfully.", "info")
+        flash(f"Profile '{ssid}' removed.", "info")
     else:
-        flash("Failed to delete profile.", "danger")
+        flash("Failed to remove profile.", "danger")
 
     return redirect(url_for('dashboard'))
 
