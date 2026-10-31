@@ -69,6 +69,9 @@
                             Scan Nearby Access Points
                         </button>
                     </form>
+                    <button type="button" class="btn-logout" onclick="openManualAuditModal()" style="padding: 0.65rem 1.25rem; font-size: 0.9rem; width: auto; background: #1c1c1c;">
+                        + Manual Audit
+                    </button>
                 </div>
             </div>
         </div>
@@ -97,11 +100,17 @@
             </div>
         </div>
 
-        <!-- Evaluated Security Profiles List -->
+        <!-- Evaluated Security Profiles List Header -->
         <div>
-            <h2 class="card-title" style="margin-bottom: 1.5rem;">
-                Evaluated Security Profiles
-            </h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 class="card-title" style="margin-bottom: 0;">
+                    Evaluated Security Profiles
+                </h2>
+                <div style="display: flex; gap: 0.65rem;">
+                    <a href="{{ url_for('export_report', format_type='csv') }}" class="btn-logout" style="padding: 0.4rem 0.9rem; font-size: 0.82rem; text-decoration: none;" title="Download audit report as CSV">Export CSV</a>
+                    <a href="{{ url_for('export_report', format_type='json') }}" class="btn-logout" style="padding: 0.4rem 0.9rem; font-size: 0.82rem; text-decoration: none;" title="Download audit report as JSON">Export JSON</a>
+                </div>
+            </div>
 
             {% if not evaluated_profiles %}
                 <div class="glass-card" style="text-align: center; color: var(--text-muted); padding: 3.5rem 1.5rem;">
@@ -186,5 +195,108 @@
             {% endif %}
         </div>
     </div>
+    <!-- Manual Audit Modal -->
+    <div id="manual-audit-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #ffffff; font-size: 1.15rem; font-weight: 600;">Manual Wi-Fi Security Audit</h3>
+                <button type="button" class="modal-close" onclick="closeManualAuditModal()">&times;</button>
+            </div>
+            <form action="{{ url_for('manual_add') }}" method="POST" style="margin-top: 1.25rem;">
+                <div class="form-group">
+                    <label for="manual-ssid">Network SSID (Name)</label>
+                    <input type="text" id="manual-ssid" name="ssid" class="form-control" placeholder="e.g. Office_WiFi or HomeRouter_5G" required>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="manual-security">Security Protocol</label>
+                        <select id="manual-security" name="security" class="form-control" onchange="syncManualSecurityDefaults()">
+                            <option value="WPA2" selected>WPA2-Personal (PSK)</option>
+                            <option value="WPA3">WPA3-Personal (SAE)</option>
+                            <option value="WPA">WPA-Personal</option>
+                            <option value="WEP">WEP (Deprecated)</option>
+                            <option value="Open">Open (No Encryption)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manual-encryption">Encryption Cipher</label>
+                        <select id="manual-encryption" name="encryption" class="form-control">
+                            <option value="AES" selected>AES (CCMP)</option>
+                            <option value="TKIP">TKIP</option>
+                            <option value="None">None</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="manual-portal">Web Login / Captive Portal</label>
+                        <select id="manual-portal" name="captive_portal" class="form-control">
+                            <option value="None" selected>None (Direct Access)</option>
+                            <option value="Detected">Detected (Web Portal)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manual-wps">WPS Status</label>
+                        <select id="manual-wps" name="wps" class="form-control">
+                            <option value="Disabled" selected>Disabled (Secure)</option>
+                            <option value="Enabled">Enabled (Vulnerable)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="manual-password">Password / Passphrase Strength</label>
+                    <select id="manual-password" name="password_strength" class="form-control">
+                        <option value="Strong" selected>Strong (16+ chars, high entropy)</option>
+                        <option value="Medium">Medium (8-14 chars, alphanumeric)</option>
+                        <option value="Weak">Weak (&lt; 8 chars, dictionary words)</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn-logout" style="width: auto; padding: 0.55rem 1.25rem;" onclick="closeManualAuditModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" style="width: auto; padding: 0.55rem 1.5rem;">Analyze &amp; Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openManualAuditModal() {
+            document.getElementById('manual-audit-modal').style.display = 'flex';
+            document.getElementById('manual-ssid').focus();
+        }
+
+        function closeManualAuditModal() {
+            document.getElementById('manual-audit-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('manual-audit-modal');
+            if (event.target === modal) {
+                closeManualAuditModal();
+            }
+        };
+
+        function syncManualSecurityDefaults() {
+            const sec = document.getElementById('manual-security').value;
+            const enc = document.getElementById('manual-encryption');
+            const portal = document.getElementById('manual-portal');
+            const wps = document.getElementById('manual-wps');
+            const pw = document.getElementById('manual-password');
+
+            if (sec === 'Open') {
+                enc.value = 'None';
+                portal.value = 'Detected';
+                wps.value = 'Disabled';
+                pw.value = 'Weak';
+            } else if (sec === 'WEP') {
+                enc.value = 'None';
+                pw.value = 'Weak';
+            } else if (sec === 'WPA3') {
+                enc.value = 'AES';
+                wps.value = 'Disabled';
+                portal.value = 'None';
+            }
+        }
+    </script>
 </body>
 </html>

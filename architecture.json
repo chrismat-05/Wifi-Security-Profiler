@@ -1,0 +1,102 @@
+{
+  "project_name": "Wi-Fi Security Profiler",
+  "version": "1.1.0",
+  "description": "Automated Wi-Fi Vulnerability Profiling, Risk Assessment, and Security Auditing System with Flask Web UI and Terminal CLI.",
+  "entry_points": {
+    "web_application": "app.py",
+    "cli_application": "main.py",
+    "test_runner": "python -m unittest discover -s tests -p 'test_*.py'"
+  },
+  "modules": {
+    "app.py": {
+      "purpose": "Flask web server, route controllers, session handling, manual audit modal submission, and report exports (JSON & CSV).",
+      "dependencies": [
+        "auth.py",
+        "risk_evaluator.py",
+        "wifi_detector.py"
+      ],
+      "data_stores": [
+        "wifi_profile.json",
+        ".secret_key"
+      ],
+      "routes": [
+        "/",
+        "/login",
+        "/signup",
+        "/logout",
+        "/dashboard",
+        "/api/detect",
+        "/auto_detect_and_add",
+        "/scan_and_add",
+        "/manual_add",
+        "/export/<format_type>",
+        "/delete_profile/<path:ssid>"
+      ]
+    },
+    "risk_evaluator.py": {
+      "purpose": "Core security risk engine. Implements vulnerability pattern detection, quantitative 0-100 scoring, risk tier classification, and hardening recommendations.",
+      "dependencies": [],
+      "features": [
+        "identify_vulnerability_patterns",
+        "classify_risk_level",
+        "generate_recommendations",
+        "evaluate_wifi_risk",
+        "batch_process_profiles"
+      ]
+    },
+    "wifi_detector.py": {
+      "purpose": "Hardware telemetry extraction via Windows netsh and live captive portal detection via HTTP probes and SSID heuristics.",
+      "dependencies": [],
+      "features": [
+        "check_captive_portal",
+        "parse_netsh_auth_and_cipher",
+        "get_profile_password_strength",
+        "detect_connected_wifi",
+        "scan_nearby_networks"
+      ]
+    },
+    "auth.py": {
+      "purpose": "User management, registration with constraints, case-insensitive duplicate checking, credential validation, and SHA-256 password hashing.",
+      "dependencies": [],
+      "data_stores": [
+        "users.json"
+      ],
+      "features": [
+        "register_user",
+        "validate_user",
+        "load_users",
+        "save_users"
+      ]
+    },
+    "main.py": {
+      "purpose": "Interactive CLI terminal interface for Wi-Fi auditing, live hardware detection, nearby scanning, manual profile evaluation, and aggregate reporting.",
+      "dependencies": [
+        "risk_evaluator.py",
+        "wifi_detector.py"
+      ],
+      "data_stores": [
+        "wifi_profile.json"
+      ]
+    }
+  },
+  "frontend": {
+    "templates": {
+      "home.html": "Landing page with system overview, threat model explanations, workflow breakdown, and CTA.",
+      "login.html": "Sign In and Sign Up tabbed authentication view.",
+      "dashboard.html": "Interactive cybersecurity dashboard with live connection monitor, summary statistics, manual audit modal, export controls, and profile cards."
+    },
+    "static": {
+      "css/style.css": "Cybersecurity dark monochrome UI styling, modal dialogs, status badges, and typography."
+    }
+  },
+  "tests": {
+    "test_suite_directory": "tests/",
+    "test_cases_total": 29,
+    "modules_tested": [
+      "tests/test_risk_evaluator.py",
+      "tests/test_auth.py",
+      "tests/test_wifi_detector.py",
+      "tests/test_app.py"
+    ]
+  }
+}

@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wi-Fi Security Profiler - Wireless Risk Auditing System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <!-- Navigation Header -->
@@ -25,24 +29,26 @@
             </div>
             <div class="user-info">
                 {% if logged_in %}
-                    <span class="username-tag">{{ username }}</span>
-                    <a href="{{ url_for('dashboard') }}" class="btn-primary" style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Dashboard</a>
-                    <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
+                <span class="username-tag">{{ username }}</span>
+                <a href="{{ url_for('dashboard') }}" class="btn-primary"
+                    style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
                 {% else %}
-                    <a href="{{ url_for('login') }}" class="btn-logout">Sign In</a>
-                    <a href="{{ url_for('dashboard') }}" class="btn-primary" style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Analyze Your Wi-Fi</a>
+                <a href="{{ url_for('login') }}" class="btn-logout">Sign In</a>
+                <a href="{{ url_for('dashboard') }}" class="btn-primary"
+                    style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Analyze Your Wi-Fi</a>
                 {% endif %}
             </div>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
 
         <!-- Hero Section -->
@@ -50,8 +56,8 @@
             <div class="hero-badge">AUTOMATED WIRELESS SECURITY AUDITING</div>
             <h1 class="hero-title">Automated Wi-Fi Vulnerability Profiling & Risk Assessment</h1>
             <p class="hero-description">
-                Wi-Fi Security Profiler performs automated real-time hardware telemetry auditing, 
-                captive portal web login probing, rule-based vulnerability pattern detection, 
+                Wi-Fi Security Profiler performs automated real-time hardware telemetry auditing,
+                captive portal web login probing, rule-based vulnerability pattern detection,
                 and comprehensive risk scoring to identify critical weaknesses in wireless networks.
             </p>
             <div class="hero-cta-group">
@@ -92,15 +98,20 @@
                 About Wi-Fi Security Profiler
             </h2>
             <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem;">
-                Wireless local area networks (WLANs) represent one of the primary entry points for cyber attacks, 
-                ranging from unauthorized eavesdropping and evil twin rogue access points to unencrypted credential interception 
-                over captive portals. Modern enterprise and personal computing environments require proactive assessment of 
+                Wireless local area networks (WLANs) represent one of the primary entry points for cyber attacks,
+                ranging from unauthorized eavesdropping and evil twin rogue access points to unencrypted credential
+                interception
+                over captive portals. Modern enterprise and personal computing environments require proactive assessment
+                of
                 wireless protocol configurations to maintain confidentiality, integrity, and regulatory compliance.
             </p>
             <p style="color: var(--text-muted); line-height: 1.8;">
-                This profiling system bridges the gap between complex packet inspection utilities and everyday operational audits. 
-                By querying system hardware interfaces, executing lightweight heuristic probes against standard captive portal triggers, 
-                and running rule-based pattern matching, Wi-Fi Security Profiler delivers instant visibility into whether a wireless 
+                This profiling system bridges the gap between complex packet inspection utilities and everyday
+                operational audits.
+                By querying system hardware interfaces, executing lightweight heuristic probes against standard captive
+                portal triggers,
+                and running rule-based pattern matching, Wi-Fi Security Profiler delivers instant visibility into
+                whether a wireless
                 connection satisfies modern cybersecurity standards or introduces severe organizational risks.
             </p>
         </section>
@@ -117,8 +128,8 @@
                         <h3>Hardware Interface Detection</h3>
                     </div>
                     <p>
-                        Automatically inspects the local wireless adapter via operating system utilities 
-                        to extract active connection parameters including SSID, BSSID, cipher suites, 
+                        Automatically inspects the local wireless adapter via operating system utilities
+                        to extract active connection parameters including SSID, BSSID, cipher suites,
                         channel radio standards, and real-time signal quality.
                     </p>
                 </div>
@@ -129,8 +140,9 @@
                         <h3>Captive Portal & Web Login Probing</h3>
                     </div>
                     <p>
-                        Probes network connectivity endpoints to detect internal redirection gateways and splash pages. 
-                        Identifies unencrypted authentication portals that expose student, employee, or guest credentials 
+                        Probes network connectivity endpoints to detect internal redirection gateways and splash pages.
+                        Identifies unencrypted authentication portals that expose student, employee, or guest
+                        credentials
                         to man-in-the-middle interception.
                     </p>
                 </div>
@@ -141,8 +153,9 @@
                         <h3>Nearby Access Point Discovery</h3>
                     </div>
                     <p>
-                        Scans over-the-air frequencies to discover all visible wireless access points in range. 
-                        Profiles each visible beacon to detect rogue open networks and insecure enterprise configurations.
+                        Scans over-the-air frequencies to discover all visible wireless access points in range.
+                        Profiles each visible beacon to detect rogue open networks and insecure enterprise
+                        configurations.
                     </p>
                 </div>
 
@@ -152,8 +165,8 @@
                         <h3>Rule-Based Vulnerability Engine</h3>
                     </div>
                     <p>
-                        Evaluates network parameters against a comprehensive cybersecurity vulnerability rule set, 
-                        detecting obsolete WEP keys, broken TKIP ciphers, WPS PIN brute-force exposures, 
+                        Evaluates network parameters against a comprehensive cybersecurity vulnerability rule set,
+                        detecting obsolete WEP keys, broken TKIP ciphers, WPS PIN brute-force exposures,
                         and weak authentication passwords.
                     </p>
                 </div>
@@ -164,7 +177,8 @@
                         <h3>Quantitative Risk Scoring</h3>
                     </div>
                     <p>
-                        Computes an objective risk score ranging from 0 (Extremely Secure) to 100 (Critical Vulnerability), 
+                        Computes an objective risk score ranging from 0 (Extremely Secure) to 100 (Critical
+                        Vulnerability),
                         stratifying evaluated networks into CRITICAL, HIGH, MEDIUM, and LOW risk categories.
                     </p>
                 </div>
@@ -175,8 +189,8 @@
                         <h3>Actionable Remediation Reports</h3>
                     </div>
                     <p>
-                        Generates explicit, actionable remediation protocols for each evaluated network, 
-                        advising administrators and end users on cipher migration, VPN tunneling, 
+                        Generates explicit, actionable remediation protocols for each evaluated network,
+                        advising administrators and end users on cipher migration, VPN tunneling,
                         and Wi-Fi Protected Access (WPA3) implementation.
                     </p>
                 </div>
@@ -193,7 +207,7 @@
                     <div class="step-badge">STEP 1</div>
                     <div class="step-title">Telemetry Acquisition</div>
                     <div class="step-text">
-                        The engine queries wireless hardware layers and probes outbound gateway routes 
+                        The engine queries wireless hardware layers and probes outbound gateway routes
                         to extract cryptographic settings and detect internal captive portal redirection.
                     </div>
                 </div>
@@ -201,7 +215,7 @@
                     <div class="step-badge">STEP 2</div>
                     <div class="step-title">Vulnerability Mapping</div>
                     <div class="step-text">
-                        The rule engine cross-references acquired specs against known wireless attack vectors 
+                        The rule engine cross-references acquired specs against known wireless attack vectors
                         including KRACK, WPS Pixie Dust, dictionary attacks, and cleartext login interception.
                     </div>
                 </div>
@@ -209,7 +223,7 @@
                     <div class="step-badge">STEP 3</div>
                     <div class="step-title">Profile Evaluation</div>
                     <div class="step-text">
-                        Risk penalties are computed and synthesized into persistent profiles, rendering interactive 
+                        Risk penalties are computed and synthesized into persistent profiles, rendering interactive
                         cards with prioritized hardening recommendations.
                     </div>
                 </div>
@@ -223,7 +237,8 @@
                     Ready to evaluate your wireless security?
                 </h2>
                 <p style="color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1.75rem auto;">
-                    Launch the analysis dashboard to perform automated hardware discovery or scan visible nearby access points.
+                    Launch the analysis dashboard to perform automated hardware discovery or scan visible nearby access
+                    points.
                 </p>
                 <a href="{{ url_for('dashboard') }}" class="btn-hero-primary">Analyze Your Wi-Fi</a>
             </div>
@@ -236,10 +251,11 @@
                     <strong>Wi-Fi Security Profiler</strong> &mdash; Wireless Security Profiling & Vulnerability Engine
                 </div>
                 <div class="footer-right">
-                    <span>Academic Project &bull; MIT License</span>
+                    <span>Built by <a href="https://thecma-xyz.vercel.app/">CMA</a></span>
                 </div>
             </div>
         </footer>
     </div>
 </body>
+
 </html>

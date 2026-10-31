@@ -17,6 +17,10 @@ An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, i
 - **Actionable Recommendations**: Generates tailored security hardening steps for each profile.
 - **User Signup & Authentication**: Multi-user registration and login with SHA-256 password hashing.
 - **Cybersecurity Web UI**: Responsive dark theme dashboard with glassmorphism cards and neon risk badges.
+- **Manual Audit Modal**: Test and evaluate custom or hypothetical Wi-Fi configurations directly through the browser.
+- **Report Export**: One-click download of evaluated profile audit reports in CSV and JSON formats.
+- **Automated Test Suite**: 29 comprehensive unit and integration tests covering risk analysis, network telemetry, authentication, and web endpoints.
+- **Architecture Graph**: Machine-readable module registry and dependency graph in `architecture.json`.
 - **Dual Interface**: Run via terminal CLI (`main.py`) or web application (`app.py`).
 
 ---
@@ -25,21 +29,27 @@ An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, i
 
 ```text
 Wifi Security Profiler/
-│── app.py                # Flask Web Server & API Routes
+│── app.py                # Flask Web Server, API & Export Routes
 │── auth.py               # Signup, Login & Hashing Module
 │── wifi_detector.py      # Real-time Wi-Fi & Captive Portal Detection
 │── risk_evaluator.py     # Vulnerability Pattern & Risk Engine
 │── main.py               # Terminal CLI Application
+│── architecture.json     # Machine-Readable Module & Dependency Graph
 │── requirements.txt      # Python dependencies
 │── .gitignore            # Git ignore rules
 │── wifi_profile.json     # Saved Wi-Fi Profiles database
 │── static/
 │   └── css/
-│       └── style.css     # Cybersecurity Dark Theme CSS
-└── templates/
-    ├── home.html         # Landing page & tool overview template
-    ├── login.html        # Sign In & Sign Up template
-    └── dashboard.html    # Dashboard & Risk Cards template
+│       └── style.css     # Cybersecurity Dark Theme CSS & Modals
+├── templates/
+│   ├── home.html         # Landing page & tool overview template
+│   ├── login.html        # Sign In & Sign Up template
+│   └── dashboard.html    # Dashboard, Risk Cards & Manual Audit Modal
+└── tests/                # Automated Test Suite (29 unit & integration tests)
+    ├── test_risk_evaluator.py
+    ├── test_auth.py
+    ├── test_wifi_detector.py
+    └── test_app.py
 ```
 
 ---
@@ -66,6 +76,12 @@ Open your browser and navigate to `http://127.0.0.1:5000`.
 ### 4. Running the CLI Application
 ```bash
 python main.py
+```
+
+### 5. Running the Test Suite
+Execute the automated test suite with standard Python unittest:
+```bash
+python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 ---
