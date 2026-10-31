@@ -836,17 +836,9 @@ body.home-body {
     letter-spacing: -0.02em;
 }
 
-.home-body .logo-mark {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #6366f1 0%, #84cc16 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 900;
+.home-body .brand-icon {
+    display: block;
+    flex-shrink: 0;
 }
 
 .home-body .home-nav {
@@ -924,30 +916,6 @@ body.home-body {
     gap: 3rem;
     align-items: center;
     margin-bottom: 4.5rem;
-}
-
-.home-body .hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #475569;
-    margin-bottom: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
-.home-body .eyebrow-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #84cc16;
-    box-shadow: 0 0 8px #84cc16;
 }
 
 .home-body .hero-headline {
@@ -1089,21 +1057,6 @@ body.home-body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.25rem;
-}
-
-.home-body .passcard-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #0f172a;
-    background: rgba(255, 255, 255, 0.85);
-    padding: 0.25rem 0.6rem;
-    border-radius: 999px;
-    border: 1px solid #e2e8f0;
 }
 
 .home-body .passcard-chip {
