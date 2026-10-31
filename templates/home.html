@@ -7,252 +7,326 @@
     <title>Wi-Fi Security Profiler - Wireless Risk Auditing System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
-<body>
-    <div class="container">
-        <!-- Navigation Header -->
-        <header class="header">
-            <a href="{{ url_for('index') }}" class="logo-link">
-                <div class="logo">
-                    Wi-Fi Security Profiler
-                </div>
+<body class="home-body">
+    <div class="home-container">
+        <!-- Floating Frosted Pill Navbar -->
+        <header class="home-header">
+            <a href="{{ url_for('index') }}" class="home-logo">
+                <div class="logo-mark">W</div>
+                <span>Wi-Fi Security Profiler</span>
             </a>
-            <div class="nav-links">
-                <a href="#overview" class="nav-item">Overview</a>
-                <a href="#capabilities" class="nav-item">Capabilities</a>
-                <a href="#methodology" class="nav-item">Methodology</a>
-            </div>
-            <div class="user-info">
+
+            <nav class="home-nav">
+                <a href="#overview">Overview</a>
+                <a href="#inspect">What We Inspect</a>
+                <a href="#showcase">Capabilities</a>
+                <a href="#principles">Assurance</a>
+            </nav>
+
+            <div class="home-auth-group">
                 {% if logged_in %}
-                <span class="username-tag">{{ username }}</span>
-                <a href="{{ url_for('dashboard') }}" class="btn-primary"
-                    style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Dashboard</a>
-                <a href="{{ url_for('logout') }}" class="btn-logout">Sign Out</a>
+                    <span style="font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #475569;">{{ username }}</span>
+                    <a href="{{ url_for('dashboard') }}" class="btn-pill-primary">Dashboard</a>
+                    <a href="{{ url_for('logout') }}" class="btn-pill-subtle">Sign Out</a>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="btn-logout">Sign In</a>
-                <a href="{{ url_for('dashboard') }}" class="btn-primary"
-                    style="width: auto; padding: 0.45rem 1.1rem; text-decoration: none;">Analyze Your Wi-Fi</a>
+                    <a href="{{ url_for('login') }}" class="btn-pill-subtle">Sign In</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn-pill-primary">Audit Wi-Fi</a>
                 {% endif %}
             </div>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" style="max-width: 800px; margin: 0 auto 2rem auto;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% endwith %}
 
-        <!-- Hero Section -->
-        <section class="hero-section" id="overview">
-            <div class="hero-badge">AUTOMATED WIRELESS SECURITY AUDITING</div>
-            <h1 class="hero-title">Automated Wi-Fi Vulnerability Profiling & Risk Assessment</h1>
-            <p class="hero-description">
-                Wi-Fi Security Profiler performs automated real-time hardware telemetry auditing,
-                captive portal web login probing, rule-based vulnerability pattern detection,
-                and comprehensive risk scoring to identify critical weaknesses in wireless networks.
-            </p>
-            <div class="hero-cta-group">
-                <a href="{{ url_for('dashboard') }}" class="btn-hero-primary">Analyze Your Wi-Fi</a>
-                <a href="#capabilities" class="btn-hero-secondary">Explore Capabilities</a>
-            </div>
-        </section>
-
-        <!-- System Architecture & Telemetry Banner -->
-        <section class="glass-card telemetry-card">
-            <div class="telemetry-grid">
-                <div class="telemetry-item">
-                    <div class="telemetry-label">AUDIT PROTOCOLS</div>
-                    <div class="telemetry-val">WPA3 / WPA2 / WEP / Open</div>
-                    <div class="telemetry-sub">Hardware netsh interface inspection</div>
+        <!-- Hero Section: Split 2-Column with Holographic Floating Card -->
+        <section class="hero-split" id="overview">
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <span class="eyebrow-dot"></span>
+                    <span>AUTOMATED WIRELESS RISK AUDITING</span>
                 </div>
-                <div class="telemetry-item">
-                    <div class="telemetry-label">ENCRYPTION AUDIT</div>
-                    <div class="telemetry-val">AES-CCMP vs TKIP</div>
-                    <div class="telemetry-sub">Cryptographic cipher evaluation</div>
-                </div>
-                <div class="telemetry-item">
-                    <div class="telemetry-label">CAPTIVE PORTAL PROBE</div>
-                    <div class="telemetry-val">HTTP Redirect & Heuristics</div>
-                    <div class="telemetry-sub">Plaintext splash page detection</div>
-                </div>
-                <div class="telemetry-item">
-                    <div class="telemetry-label">SCORING ENGINE</div>
-                    <div class="telemetry-val">0–100 Weighted Penalty</div>
-                    <div class="telemetry-sub">Categorized into 4 risk levels</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Core Tool Description Section -->
-        <section class="glass-card info-section" id="about">
-            <h2 class="card-title" style="font-size: 1.4rem; margin-bottom: 1rem;">
-                About Wi-Fi Security Profiler
-            </h2>
-            <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem;">
-                Wireless local area networks (WLANs) represent one of the primary entry points for cyber attacks,
-                ranging from unauthorized eavesdropping and evil twin rogue access points to unencrypted credential
-                interception
-                over captive portals. Modern enterprise and personal computing environments require proactive assessment
-                of
-                wireless protocol configurations to maintain confidentiality, integrity, and regulatory compliance.
-            </p>
-            <p style="color: var(--text-muted); line-height: 1.8;">
-                This profiling system bridges the gap between complex packet inspection utilities and everyday
-                operational audits.
-                By querying system hardware interfaces, executing lightweight heuristic probes against standard captive
-                portal triggers,
-                and running rule-based pattern matching, Wi-Fi Security Profiler delivers instant visibility into
-                whether a wireless
-                connection satisfies modern cybersecurity standards or introduces severe organizational risks.
-            </p>
-        </section>
-
-        <!-- Capabilities Grid -->
-        <section style="margin-bottom: 2.5rem;" id="capabilities">
-            <h2 class="card-title" style="font-size: 1.4rem; margin-bottom: 1.5rem;">
-                Core Capabilities & Security Checks
-            </h2>
-            <div class="capabilities-grid">
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">01</span>
-                        <h3>Hardware Interface Detection</h3>
-                    </div>
-                    <p>
-                        Automatically inspects the local wireless adapter via operating system utilities
-                        to extract active connection parameters including SSID, BSSID, cipher suites,
-                        channel radio standards, and real-time signal quality.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">02</span>
-                        <h3>Captive Portal & Web Login Probing</h3>
-                    </div>
-                    <p>
-                        Probes network connectivity endpoints to detect internal redirection gateways and splash pages.
-                        Identifies unencrypted authentication portals that expose student, employee, or guest
-                        credentials
-                        to man-in-the-middle interception.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">03</span>
-                        <h3>Nearby Access Point Discovery</h3>
-                    </div>
-                    <p>
-                        Scans over-the-air frequencies to discover all visible wireless access points in range.
-                        Profiles each visible beacon to detect rogue open networks and insecure enterprise
-                        configurations.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">04</span>
-                        <h3>Rule-Based Vulnerability Engine</h3>
-                    </div>
-                    <p>
-                        Evaluates network parameters against a comprehensive cybersecurity vulnerability rule set,
-                        detecting obsolete WEP keys, broken TKIP ciphers, WPS PIN brute-force exposures,
-                        and weak authentication passwords.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">05</span>
-                        <h3>Quantitative Risk Scoring</h3>
-                    </div>
-                    <p>
-                        Computes an objective risk score ranging from 0 (Extremely Secure) to 100 (Critical
-                        Vulnerability),
-                        stratifying evaluated networks into CRITICAL, HIGH, MEDIUM, and LOW risk categories.
-                    </p>
-                </div>
-
-                <div class="capability-card">
-                    <div class="capability-header">
-                        <span class="capability-num">06</span>
-                        <h3>Actionable Remediation Reports</h3>
-                    </div>
-                    <p>
-                        Generates explicit, actionable remediation protocols for each evaluated network,
-                        advising administrators and end users on cipher migration, VPN tunneling,
-                        and Wi-Fi Protected Access (WPA3) implementation.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Methodology Section -->
-        <section class="glass-card methodology-section" id="methodology">
-            <h2 class="card-title" style="font-size: 1.4rem; margin-bottom: 1.5rem;">
-                Audit Methodology & Workflow
-            </h2>
-            <div class="steps-container">
-                <div class="step-card">
-                    <div class="step-badge">STEP 1</div>
-                    <div class="step-title">Telemetry Acquisition</div>
-                    <div class="step-text">
-                        The engine queries wireless hardware layers and probes outbound gateway routes
-                        to extract cryptographic settings and detect internal captive portal redirection.
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-badge">STEP 2</div>
-                    <div class="step-title">Vulnerability Mapping</div>
-                    <div class="step-text">
-                        The rule engine cross-references acquired specs against known wireless attack vectors
-                        including KRACK, WPS Pixie Dust, dictionary attacks, and cleartext login interception.
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-badge">STEP 3</div>
-                    <div class="step-title">Profile Evaluation</div>
-                    <div class="step-text">
-                        Risk penalties are computed and synthesized into persistent profiles, rendering interactive
-                        cards with prioritized hardening recommendations.
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Call to Action Banner -->
-        <section class="cta-banner">
-            <div class="cta-content">
-                <h2 style="font-size: 1.6rem; color: #ffffff; margin-bottom: 0.65rem;">
-                    Ready to evaluate your wireless security?
-                </h2>
-                <p style="color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 0 auto 1.75rem auto;">
-                    Launch the analysis dashboard to perform automated hardware discovery or scan visible nearby access
-                    points.
+                <h1 class="hero-headline">
+                    Audit your <span class="highlight-pill">Wi-Fi</span><br>protect your network.
+                </h1>
+                <p class="hero-lead">
+                    Real-time hardware telemetry, captive portal probing, and rule-based vulnerability risk scoring in one click. Zero fluff, pure wireless diagnostics.
                 </p>
-                <a href="{{ url_for('dashboard') }}" class="btn-hero-primary">Analyze Your Wi-Fi</a>
+                <div class="hero-actions">
+                    <a href="{{ url_for('dashboard') }}" class="btn-hero-cta">Audit Network Now</a>
+                    <a href="#inspect" class="btn-hero-textlink">How it works &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Floating 3D Holographic Card Mockup -->
+            <div class="hero-visual-stage">
+                <div class="visual-ribbon-bg"></div>
+                <div class="decorative-ring"></div>
+
+                <div class="holo-passcard">
+                    <div class="passcard-top">
+                        <span class="passcard-badge">
+                            <span style="display:inline-block; width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
+                            Active Telemetry
+                        </span>
+                        <div class="passcard-chip"></div>
+                    </div>
+
+                    <div class="passcard-ssid-label">CONNECTED ACCESS POINT</div>
+                    <div class="passcard-ssid-name">HomeFiber_5GHz</div>
+
+                    <div class="passcard-specs">
+                        <div class="spec-col">
+                            <label>SECURITY</label>
+                            <span>WPA3-SAE</span>
+                        </div>
+                        <div class="spec-col">
+                            <label>CIPHER</label>
+                            <span>AES-CCMP</span>
+                        </div>
+                        <div class="spec-col">
+                            <label>SIGNAL</label>
+                            <span>94% (-52 dBm)</span>
+                        </div>
+                        <div class="spec-col">
+                            <label>WEB LOGIN</label>
+                            <span style="color:#16a34a;">None (Direct)</span>
+                        </div>
+                    </div>
+
+                    <div class="passcard-footer">
+                        <div class="risk-score-pill">
+                            <span>SCORE: 0 / 100 &bull; SECURE</span>
+                        </div>
+                        <div class="passcard-exp">802.11ax</div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <strong>Wi-Fi Security Profiler</strong> &mdash; Wireless Security Profiling & Vulnerability Engine
+        <!-- Dark Metric Pill Banner -->
+        <section class="dark-stats-banner">
+            <div class="stats-top-row">
+                <span class="badge-lime">&#10022;</span>
+                <span>System Capabilities &bull; Local Windows Wireless Diagnostics</span>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-desc">Real-Time Netsh Telemetry</div>
                 </div>
-                <div class="footer-right">
-                    <span>Built by <a href="https://thecma-xyz.vercel.app/">CMA</a></span>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-desc">Vulnerability Vectors Audited</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-number">0–100</div>
+                    <div class="stat-desc">Quantitative Risk Scoring</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Instant</div>
+                    <div class="stat-desc">CSV / JSON Report Export</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- "What we inspect?" Section -->
+        <section class="inspect-section" id="inspect">
+            <h2 class="section-headline">
+                What <span style="color:#6366f1;">we inspect?</span>
+            </h2>
+            <p class="section-sub">
+                Core telemetry dimensions analyzed continuously to classify wireless risks.
+            </p>
+
+            <div class="inspect-cards-grid">
+                <!-- Card 1 -->
+                <div class="pill-feature-card">
+                    <div class="feature-orb orb-violet">&odot;</div>
+                    <h3>Hardware Telemetry</h3>
+                    <p>
+                        Directly queries Windows netsh interfaces for real-time SSID, BSSID MAC addresses, radio bands, and signal quality.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="pill-feature-card">
+                    <div class="feature-orb orb-lime">&#10038;</div>
+                    <h3>Captive Portals</h3>
+                    <p>
+                        Probes outbound HTTP gateways to identify unencrypted internal splash pages and intercepted credential login portals.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="pill-feature-card">
+                    <div class="feature-orb orb-pink">&#9888;</div>
+                    <h3>Cipher &amp; WPS</h3>
+                    <p>
+                        Evaluates cryptographic suites to flag deprecated WEP keys, broken TKIP ciphers, and WPS brute-force vectors.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="pill-feature-card">
+                    <div class="feature-orb orb-cyan">&#9670;</div>
+                    <h3>Risk Grading</h3>
+                    <p>
+                        Calculates an objective 0–100 penalty score, stratifies risk into 4 tiers, and generates actionable hardening steps.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Split Showcase: Copy + Live Mockup -->
+        <section class="showcase-section" id="showcase">
+            <div>
+                <h2 class="showcase-title">
+                    Instant security grading <br><span class="text-violet">at a glance.</span>
+                </h2>
+                <p class="showcase-lead">
+                    No complex Wireshark packet captures or manual terminal commands. Simply launch the profiler to analyze your active Wi-Fi, scan nearby beacons, or simulate custom router configurations.
+                </p>
+
+                <ul class="check-list">
+                    <li>
+                        <span class="check-icon">&check;</span>
+                        <span>Automated hardware discovery via Windows netsh</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">&check;</span>
+                        <span>Zero external drivers or packet injection equipment needed</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">&check;</span>
+                        <span>Tailored remediation protocols for every identified vulnerability</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">&check;</span>
+                        <span>Exportable security audit reports in JSON and CSV formats</span>
+                    </li>
+                </ul>
+
+                <a href="{{ url_for('dashboard') }}" class="btn-hero-cta">Launch Analysis Dashboard</a>
+            </div>
+
+            <!-- Realistic Mockup Card Preview -->
+            <div class="mockup-wrapper">
+                <div class="mockup-header">
+                    <div class="mockup-title">Airport_Public_WiFi</div>
+                    <span class="mockup-badge-danger">CRITICAL RISK &bull; 80/100</span>
+                </div>
+
+                <div class="mockup-specs-grid">
+                    <div>
+                        <label>SECURITY</label>
+                        <span>Open</span>
+                    </div>
+                    <div>
+                        <label>CIPHER</label>
+                        <span>None</span>
+                    </div>
+                    <div>
+                        <label>WEB LOGIN</label>
+                        <span style="color:#dc2626;">Detected</span>
+                    </div>
+                    <div>
+                        <label>WPS</label>
+                        <span>Disabled</span>
+                    </div>
+                </div>
+
+                <div class="mockup-vuln-box">
+                    <strong>[CRITICAL] Unencrypted Open Network:</strong> Wireless traffic is transmitted in cleartext and exposed to MITM packet sniffing.
+                </div>
+
+                <div class="mockup-vuln-box" style="background:#fffbeb; border-color:#fde68a; color:#92400e;">
+                    <strong style="color:#78350f;">[HIGH] Captive Portal Detected:</strong> Internal splash page intercepted request. Web credentials can be monitored.
+                </div>
+
+                <div class="mockup-rec-box">
+                    &bull; Upgrade network security to WPA2-Personal or WPA3.
+                </div>
+                <div class="mockup-rec-box">
+                    &bull; Tunnel all unencrypted traffic through a trusted VPN.
+                </div>
+            </div>
+        </section>
+
+        <!-- Dark Callout Banner -->
+        <section class="dark-callout-banner">
+            <div>
+                <h2 class="callout-headline">
+                    Detect vulnerabilities before they become entry points.
+                </h2>
+                <p class="callout-lead">
+                    Audit your current wireless connection or test router configurations now. 100% free, privacy-first, and runs entirely on your local system.
+                </p>
+                <a href="{{ url_for('dashboard') }}" class="btn-hero-cta" style="background:#84cc16; color:#0f172a;">
+                    Analyze Your Wi-Fi &rarr;
+                </a>
+            </div>
+
+            <div class="callout-cards-visual">
+                <div class="callout-mini-card card-secure">
+                    <div>
+                        <div style="font-size:0.9rem; font-weight:800; font-family:'JetBrains Mono', monospace;">Secure_Office_Net</div>
+                        <div style="font-size:0.75rem; color:#94a3b8;">WPA3-Personal &bull; AES &bull; 0/100</div>
+                    </div>
+                    <span style="color:#22c55e; font-size:0.78rem; font-weight:800; font-family:'JetBrains Mono', monospace;">LOW RISK</span>
+                </div>
+
+                <div class="callout-mini-card card-alert">
+                    <div>
+                        <div style="font-size:0.9rem; font-weight:800; font-family:'JetBrains Mono', monospace;">Guest_Lobby_Free</div>
+                        <div style="font-size:0.75rem; color:#94a3b8;">Open &bull; Captive Portal &bull; 80/100</div>
+                    </div>
+                    <span style="color:#ef4444; font-size:0.78rem; font-weight:800; font-family:'JetBrains Mono', monospace;">CRITICAL</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Three Core Principles -->
+        <section class="principles-grid" id="principles">
+            <div class="principle-card">
+                <h4>Privacy-First Diagnostics</h4>
+                <p>
+                    All scanning and evaluations execute locally on your machine. No wireless telemetry, passwords, or SSIDs are ever transmitted to external servers.
+                </p>
+            </div>
+
+            <div class="principle-card">
+                <h4>Objective Scoring Matrix</h4>
+                <p>
+                    Vulnerability weights adhere to established NIST and Wi-Fi Alliance standards, delivering reliable, reproducible risk assessments.
+                </p>
+            </div>
+
+            <div class="principle-card">
+                <h4>Dual Interface Workflow</h4>
+                <p>
+                    Seamlessly switch between the responsive web application (app.py) and the lightweight terminal CLI (main.py) for terminal-based audits.
+                </p>
+            </div>
+        </section>
+
+        <!-- Clean Minimal Footer -->
+        <footer class="home-footer">
+            <div>
+                <strong>Wi-Fi Security Profiler</strong> &mdash; Wireless Security Auditing System
+            </div>
+            <div>
+                <span>Academic Project &bull; Built by <a href="https://thecma-xyz.vercel.app/" target="_blank" rel="noopener">CMA</a></span>
             </div>
         </footer>
     </div>
