@@ -1,5 +1,5 @@
 {
-  "project_name": "Wi-Fi Security Profiler",
+  "project_name": "Check the WifiSec",
   "version": "1.1.0",
   "description": "Automated Wi-Fi Vulnerability Profiling, Risk Assessment, and Security Auditing System with Flask Web UI and Terminal CLI.",
   "entry_points": {

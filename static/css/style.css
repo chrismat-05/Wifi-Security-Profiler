@@ -2100,4 +2100,74 @@ body.home-body {
     letter-spacing: 0.04em;
 }
 
+.home-body .brand-graphic-logo {
+    display: block;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(99, 102, 241, 0.35));
+}
+
+/* ============================================================
+   LOGIN PAGE ALIGNED TO HOMEPAGE DESIGN
+   ============================================================ */
+
+.home-body.login-page .login-card-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 68vh;
+    padding: 1.5rem 0;
+}
+
+.home-body.login-page .login-card {
+    width: 100%;
+    max-width: 440px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.08);
+}
+
+.home-body.login-page .auth-pill-tabs {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 999px;
+    padding: 0.35rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.home-body.login-page .auth-pill-tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.65rem 1rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #64748b;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.home-body.login-page .auth-pill-tab.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.home-body.login-page .auth-switch-link {
+    display: inline-block;
+    color: #64748b;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.home-body.login-page .auth-switch-link:hover {
+    color: #0f172a;
+}
+
+
 

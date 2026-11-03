@@ -1,5 +1,5 @@
 """
-Flask Web Application for Wi-Fi Security Profiler
+Flask Web Application for Check the WifiSec
 Provides login/signup screen, automated connected Wi-Fi analysis,
 nearby network scanning, internal web login / captive portal probing,
 and interactive Comprehensive Risk Cards.
@@ -334,7 +334,7 @@ def export_report(format_type):
 
     if format_type == 'json':
         export_data = {
-            "report_title": "Wi-Fi Security Profiler Evaluation Report",
+            "report_title": "Check the WifiSec Evaluation Report",
             "generated_by": session['username'],
             "total_profiles": summary["total_profiles"],
             "risk_counts": summary["risk_counts"],
@@ -384,5 +384,5 @@ def export_report(format_type):
 
 
 if __name__ == '__main__':
-    print("Starting Wi-Fi Security Profiler Web App on http://127.0.0.1:5000")
+    print("Starting Check the WifiSec Web App on http://127.0.0.1:5000")
     app.run(debug=True, port=5000)

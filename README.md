@@ -1,6 +1,6 @@
-# Wi-Fi Security Profiler
+# Check the WifiSec
 
-An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, internal web login / captive portal probing, rule-based vulnerability pattern detection, risk level classification, SHA-256 user authentication, and a modern dark cybersecurity web interface built with Flask.
+An interactive Wi-Fi Security Analysis tool featuring hardware auto-detection, internal web login / captive portal probing, rule-based vulnerability pattern detection, risk level classification, SHA-256 user authentication, and a modern cybersecurity web interface built with Flask.
 
 ---
 

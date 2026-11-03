@@ -60,7 +60,7 @@ class TestWebApp(unittest.TestCase):
         """Home page should render with 200 OK and brand title."""
         res = self.client.get("/")
         self.assertEqual(res.status_code, 200)
-        self.assertIn(b"Wi-Fi Security Profiler", res.data)
+        self.assertIn(b"Check the WifiSec", res.data)
 
     def test_dashboard_unauthenticated_redirect(self):
         """Accessing dashboard without a session should redirect to login."""
