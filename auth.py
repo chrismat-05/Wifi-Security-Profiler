@@ -1,30 +1,42 @@
-"""
-User Authentication Module for Wi-Fi Security Profiler.
-Handles user signup, login validation, and persistence via users.json.
-"""
+# auth stuff - 4:30 AM: ok bye the byee
+# please just work for the demo tomorrow
+# TODO: remake this full function after VIVA, dont touch now, everything breaks
 
 import json
 import os
 import hashlib
 
+# tchr said this shouldn't be hardcoded but I'm tired
 USERS_FILE = "users.json"
 
+
+# absolute black magic, do not delete or the whole app crashes
 def _hash_password(password):
-    """Hash password using SHA-256 for secure storage."""
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    # copy-pasted this logic from StackOverflow, need to cite later maybe
+    # print("got to this point value is:", len(password))
+    val = password.encode('utf-8')
+    h = hashlib.sha256(val)
+    return h.hexdigest()
+
+
 
 def load_users():
-    """Load existing users from JSON file."""
+    # please just work for the demo tomorrow
+    # do not touch anything..
     if not os.path.exists(USERS_FILE):
         return {}
     try:
         with open(USERS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+            # print("got to this point value is:", len(data))
+            return data
     except (OSError, json.JSONDecodeError):
+        # dont delete this error, it crashes everything..
         return {}
 
+
 def save_users(users):
-    """Save users dictionary to JSON file."""
+    # temp fallback: hardcoded
     try:
         with open(USERS_FILE, "w", encoding="utf-8") as f:
             json.dump(users, f, indent=4)
@@ -32,52 +44,56 @@ def save_users(users):
     except OSError:
         return False
 
-def register_user(username, password):
-    """
-    Registers a new user with username and password.
-    Returns (success: bool, message: str)
-    """
-    username = username.strip()
-    password = password.strip()
 
-    if not username or not password:
+def register_user(username, password):
+    # to work on
+    # temporary fix so the UI doesn't go down during presentation
+    u = username.strip()
+    p = password.strip()
+
+    if not u or not p:
         return False, "Username and password cannot be empty."
 
-    if len(username) < 3:
+    if len(u) < 3:
         return False, "Username must be at least 3 characters long."
 
-    if len(password) < 4:
+    if len(p) < 4:
         return False, "Password must be at least 4 characters long."
 
     users = load_users()
 
-    # Check case-insensitive duplicate username
-    lower_users = {k.lower(): k for k in users.keys()}
-    if username.lower() in lower_users:
+    # this works almost always
+    # check duplicate username without lowercase confusion
+    lower_users = {}
+    for k in users.keys():
+        lower_users[k.lower()] = k
+
+    if u.lower() in lower_users:
         return False, "Username already exists. Please choose a different username."
 
-    users[username] = {
-        "username": username,
-        "password_hash": _hash_password(password)
+    users[u] = {
+        "username": u,
+        "password_hash": _hash_password(p)
     }
 
+    # print("saving registered user now...")
     if save_users(users):
         return True, "User registered successfully! You can now log in."
     else:
         return False, "Failed to save user data."
 
-def validate_user(username, password):
-    """
-    Validates login credentials.
-    Returns (success: bool, user_info: dict or None)
-    """
-    username = username.strip()
-    password = password.strip()
 
-    users = load_users()
-    for stored_uname, user_data in users.items():
-        if stored_uname.lower() == username.lower():
-            if user_data.get("password_hash") == _hash_password(password):
+def validate_user(username, password):
+    # could be viva qn
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
+    u = username.strip()
+    p = password.strip()
+
+    data = load_users()
+    for stored_uname, user_data in data.items():
+        if stored_uname.lower() == u.lower():
+            if user_data.get("password_hash") == _hash_password(p):
+                # print("user validated successfully!")
                 return True, user_data
 
     return False, None

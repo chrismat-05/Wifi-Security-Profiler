@@ -2158,5 +2158,30 @@ body.home-body {
     color: #0f172a;
 }
 
+/* temporary fix so the UI doesn't go down during presentation */
+/* please just work for the demo tomorrow */
+/* copy-pasted this logic from StackOverflow, need to cite later maybe */
+.portal-live-detected {
+    color: #f97316;
+}
+
+.portal-live-clear {
+    color: #84cc16;
+}
+
+/* absolute black magic, do not delete or the whole app crashes */
+/* // do not touch anything.. */
+.portal-card-detected {
+    color: #ea580c;
+    font-weight: 800;
+}
+
+.portal-card-clear {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+
+
 
 

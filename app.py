@@ -1,9 +1,7 @@
-"""
-Flask Web Application for Check the WifiSec
-Provides login/signup screen, automated connected Wi-Fi analysis,
-nearby network scanning, internal web login / captive portal probing,
-and interactive Comprehensive Risk Cards.
-"""
+# flask web server app... 5:00 AM and I am running purely on caffeine and prayers
+# 4:30 AM: ok bye the byee
+# please just work for the demo tomorrow
+# TODO: remake this full function after VIVA, dont touch now, everything breaks
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 import os
@@ -15,56 +13,69 @@ from auth import register_user, validate_user
 from risk_evaluator import evaluate_wifi_risk, batch_process_profiles
 from wifi_detector import detect_connected_wifi, scan_nearby_networks
 
+
 app = Flask(__name__)
 
+# tchr said this shouldn't be hardcoded but I'm tired
 SECRET_KEY_FILE = ".secret_key"
 
 
+# absolute black magic, do not delete or the whole app crashes
 def _load_or_create_secret_key():
-    """Retrieve persistent secret key from env or local file to maintain sessions across restarts."""
-    env_key = os.environ.get("FLASK_SECRET_KEY")
-    if env_key:
-        return env_key
+    # keeping the session key so I don't get logged out during the presentation
+    # copy-pasted this logic from StackOverflow, need to cite later maybe
+    temp_env_key = os.environ.get("FLASK_SECRET_KEY")
+    if temp_env_key:
+        return temp_env_key
     if os.path.exists(SECRET_KEY_FILE):
         try:
             with open(SECRET_KEY_FILE, "r", encoding="utf-8") as f:
-                key = f.read().strip()
-                if key:
-                    return key
+                k = f.read().strip()
+                if k:
+                    return k
         except OSError:
             pass
-    new_key = secrets.token_hex(24)
+
+    # make new random token if file doesn't exist
+    # temp fallback: hardcoded
+    new_token = secrets.token_hex(24)
     try:
         with open(SECRET_KEY_FILE, "w", encoding="utf-8") as f:
-            f.write(new_key)
+            f.write(new_token)
     except OSError:
         pass
-    return new_key
+    return new_token
 
 
 app.secret_key = _load_or_create_secret_key()
 
+# where wifi json data lives
 PROFILE_FILE = "wifi_profile.json"
 
 
 def load_all_profiles():
-    """Load raw Wi-Fi profiles list from JSON file."""
+    # loads profiles from json... hope file isn't corrupted
+    # print("HERE!!!")
+    # do not touch anything..
     if not os.path.exists(PROFILE_FILE):
         return []
     try:
         with open(PROFILE_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
+            # print("got to this point value is:", len(data) if isinstance(data, list) else 1)
             if isinstance(data, list):
                 return data
             elif isinstance(data, dict):
                 return [data]
             return []
     except (OSError, json.JSONDecodeError):
+        # dont delete this error, it crashes everything..
         return []
 
 
 def save_profiles(profiles):
-    """Save profiles list to JSON file."""
+    # saves profiles array back to json file
+    # please just work for the demo tomorrow
     try:
         with open(PROFILE_FILE, "w", encoding="utf-8") as f:
             json.dump(profiles, f, indent=4)
@@ -73,55 +84,64 @@ def save_profiles(profiles):
         return False
 
 
+
 @app.route('/')
 def index():
-    """Home landing page with comprehensive tool description and analysis CTA."""
-    return render_template('home.html', logged_in=('username' in session), username=session.get('username'))
+    # home page landing route
+    # temporary fix so the UI doesn't go down during presentation
+    is_user_in = 'username' in session
+    curr_user = session.get('username')
+    return render_template('home.html', logged_in=is_user_in, username=curr_user)
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handles user login with redirection back to original target if provided."""
+    # user login handling
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
     if 'username' in session:
         return redirect(url_for('dashboard'))
 
-    error = None
-    next_url = request.args.get('next') or request.form.get('next') or url_for('dashboard')
+    err_msg = None
+    next_page = request.args.get('next') or request.form.get('next') or url_for('dashboard')
 
     if request.method == 'POST':
-        username = request.form.get('username', '').strip()
-        password = request.form.get('password', '').strip()
+        # print("attempting login...")
+        u = request.form.get('username', '').strip()
+        p = request.form.get('password', '').strip()
 
-        valid, user_data = validate_user(username, password)
-        if valid:
+        ok, user_data = validate_user(u, p)
+        if ok:
             session['username'] = user_data['username']
             flash("Logged in successfully!", "success")
-            return redirect(next_url)
+            return redirect(next_page)
         else:
-            error = "Invalid username or password. Please try again or Sign Up."
+            err_msg = "Invalid username or password. Please try again or Sign Up."
 
-    return render_template('login.html', error=error, next_url=next_url)
+    return render_template('login.html', error=err_msg, next_url=next_page)
 
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    """Handles new user registration."""
-    username = request.form.get('username', '').strip()
-    password = request.form.get('password', '').strip()
-    next_url = request.form.get('next') or url_for('dashboard')
+    # register new account
+    # could be viva qn
+    u = request.form.get('username', '').strip()
+    p = request.form.get('password', '').strip()
+    next_page = request.form.get('next') or url_for('dashboard')
 
-    ok, message = register_user(username, password)
+    ok, msg = register_user(u, p)
     if ok:
-        flash(message, "success")
-        return redirect(url_for('login', next=next_url))
+        flash(msg, "success")
+        return redirect(url_for('login', next=next_page))
     else:
-        flash(message, "danger")
-        return redirect(url_for('login', next=next_url))
+        flash(msg, "danger")
+        return redirect(url_for('login', next=next_page))
 
 
 @app.route('/logout')
 def logout():
-    """Logs out current user."""
+    # user sign out
+    # print("logging out...")
     session.pop('username', None)
     flash("You have been logged out.", "info")
     return redirect(url_for('index'))
@@ -129,25 +149,28 @@ def logout():
 
 @app.route('/dashboard')
 def dashboard():
-    """Main dashboard displaying live Wi-Fi status, scan controls, and evaluated security profile cards."""
+    # main cyber dashboard
+    # this works almost always
+    # please just work for the demo tomorrow
     if 'username' not in session:
         flash("Please log in to access the Wi-Fi analysis dashboard.", "warning")
         return redirect(url_for('login', next=url_for('dashboard')))
 
-    raw_profiles = load_all_profiles()
-    summary = batch_process_profiles(raw_profiles)
-    active_wifi = detect_connected_wifi()
+    raw_data = load_all_profiles()
+    summary_info = batch_process_profiles(raw_data)
+    live_wifi = detect_connected_wifi()
 
     return render_template('dashboard.html',
                            username=session['username'],
-                           summary=summary,
-                           evaluated_profiles=summary['evaluated_profiles'],
-                           active_wifi=active_wifi)
+                           summary=summary_info,
+                           evaluated_profiles=summary_info['evaluated_profiles'],
+                           active_wifi=live_wifi)
 
 
 @app.route('/api/detect')
 def api_detect():
-    """API endpoint returning detected Wi-Fi data as JSON."""
+    # json api endpoint
+    # to work on
     if 'username' not in session:
         return jsonify({"error": "Unauthorized"}), 401
     return jsonify(detect_connected_wifi())
@@ -155,7 +178,8 @@ def api_detect():
 
 @app.route('/auto_detect_and_add', methods=['POST'])
 def auto_detect_and_add():
-    """Auto-detects connected Wi-Fi network & captive portal status, adding it to security profiles."""
+    # adds current connected wifi
+    # absolute black magic, do not delete or the whole app crashes
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -164,26 +188,28 @@ def auto_detect_and_add():
         flash(detected.get('message', 'No active connected Wi-Fi interface detected.'), 'warning')
         return redirect(url_for('dashboard'))
 
-    ssid = detected.get('ssid')
-    security = detected.get('security', 'WPA2')
-    encryption = detected.get('encryption', 'AES')
+    s_name = detected.get('ssid')
+    sec = detected.get('security', 'WPA2')
+    enc = detected.get('encryption', 'AES')
     wps = detected.get('wps', 'Disabled')
-    password_strength = detected.get('password_strength', 'Strong')
-    captive_portal = detected.get('captive_portal', 'None')
+    pw_str = detected.get('password_strength', 'Strong')
+    portal = detected.get('captive_portal', 'None')
 
+    # tchr said this shouldn't be hardcoded but I'm tired
     new_profile = {
-        "ssid": ssid,
-        "security": security,
-        "encryption": encryption,
+        "ssid": s_name,
+        "security": sec,
+        "encryption": enc,
         "wps": wps,
-        "password_strength": password_strength,
-        "captive_portal": captive_portal
+        "password_strength": pw_str,
+        "captive_portal": portal
     }
 
     raw_profiles = load_all_profiles()
     updated = False
-    for i, p in enumerate(raw_profiles):
-        if p.get("ssid", "").strip().lower() == ssid.lower():
+    for i in range(len(raw_profiles)):
+        p = raw_profiles[i]
+        if p.get("ssid", "").strip().lower() == s_name.lower():
             raw_profiles[i] = new_profile
             updated = True
             break
@@ -193,17 +219,23 @@ def auto_detect_and_add():
     save_profiles(raw_profiles)
     eval_res = evaluate_wifi_risk(new_profile)
     
-    msg = f"Analyzed active Wi-Fi '{ssid}'! Risk Level: [{eval_res['risk_level']}]."
-    if captive_portal == "Detected":
+    msg = f"Analyzed active Wi-Fi '{s_name}'! Risk Level: [{eval_res['risk_level']}]."
+    if portal == "Detected":
         msg += " Internal Web Login / Captive Portal Detected!"
-    flash(msg, "success" if eval_res['risk_level'] in ['LOW', 'MEDIUM'] else "warning")
+    
+    if eval_res['risk_level'] in ['LOW', 'MEDIUM']:
+        cat = "success"
+    else:
+        cat = "warning"
+    flash(msg, cat)
 
     return redirect(url_for('dashboard'))
 
 
 @app.route('/scan_and_add', methods=['POST'])
 def scan_and_add():
-    """Scans all visible nearby Wi-Fi networks and adds them to evaluated profiles."""
+    # scan surrounding networks
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -216,12 +248,12 @@ def scan_and_add():
     added_count = 0
 
     for net in nearby:
-        ssid = net.get('ssid')
-        if not ssid:
+        ssid_val = net.get('ssid')
+        if not ssid_val:
             continue
 
-        new_profile = {
-            "ssid": ssid,
+        temp_prof = {
+            "ssid": ssid_val,
             "security": net.get('security', 'WPA2'),
             "encryption": net.get('encryption', 'AES'),
             "wps": net.get('wps', 'Disabled'),
@@ -230,13 +262,14 @@ def scan_and_add():
         }
 
         updated = False
-        for i, p in enumerate(raw_profiles):
-            if p.get("ssid", "").strip().lower() == ssid.lower():
-                raw_profiles[i] = new_profile
+        for i in range(len(raw_profiles)):
+            p = raw_profiles[i]
+            if p.get("ssid", "").strip().lower() == ssid_val.lower():
+                raw_profiles[i] = temp_prof
                 updated = True
                 break
         if not updated:
-            raw_profiles.append(new_profile)
+            raw_profiles.append(temp_prof)
             added_count += 1
 
     save_profiles(raw_profiles)
@@ -247,12 +280,17 @@ def scan_and_add():
 
 @app.route('/delete_profile/<path:ssid>', methods=['POST'])
 def delete_profile(ssid):
-    """Deletes a Wi-Fi profile by SSID."""
+    # removes a profile from json
+    # temporary fix so the UI doesn't go down during presentation
     if 'username' not in session:
         return redirect(url_for('login'))
 
     raw_profiles = load_all_profiles()
-    filtered = [p for p in raw_profiles if p.get("ssid", "").strip().lower() != ssid.strip().lower()]
+    filtered = []
+    # simple loop instead of comprehension
+    for p in raw_profiles:
+        if p.get("ssid", "").strip().lower() != ssid.strip().lower():
+            filtered.append(p)
 
     if save_profiles(filtered):
         flash(f"Profile '{ssid}' removed.", "info")
@@ -264,20 +302,21 @@ def delete_profile(ssid):
 
 @app.route('/manual_add', methods=['POST'])
 def manual_add():
-    """Manually add or evaluate a Wi-Fi network profile."""
+    # user manually enters router settings in modal
+    # please just work for the demo tomorrow
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    ssid = request.form.get('ssid', '').strip()
-    if not ssid:
+    s = request.form.get('ssid', '').strip()
+    if not s:
         flash("Network SSID cannot be empty.", "danger")
         return redirect(url_for('dashboard'))
 
-    security = request.form.get('security', 'WPA2').strip()
-    encryption = request.form.get('encryption', 'AES').strip()
-    wps = request.form.get('wps', 'Disabled').strip()
-    password_strength = request.form.get('password_strength', 'Strong').strip()
-    captive_portal = request.form.get('captive_portal', 'None').strip()
+    sec = request.form.get('security', 'WPA2').strip()
+    enc = request.form.get('encryption', 'AES').strip()
+    w = request.form.get('wps', 'Disabled').strip()
+    pw = request.form.get('password_strength', 'Strong').strip()
+    portal = request.form.get('captive_portal', 'None').strip()
 
     valid_security = ["Open", "WEP", "WPA", "WPA2", "WPA3"]
     valid_encryption = ["None", "TKIP", "AES"]
@@ -285,30 +324,32 @@ def manual_add():
     valid_password_strength = ["Weak", "Medium", "Strong"]
     valid_captive_portal = ["None", "Detected"]
 
-    if security not in valid_security:
-        security = "WPA2"
-    if encryption not in valid_encryption:
-        encryption = "AES"
-    if wps not in valid_wps:
-        wps = "Disabled"
-    if password_strength not in valid_password_strength:
-        password_strength = "Strong"
-    if captive_portal not in valid_captive_portal:
-        captive_portal = "None"
+    if sec not in valid_security:
+        sec = "WPA2"
+    if enc not in valid_encryption:
+        enc = "AES"
+    if w not in valid_wps:
+        w = "Disabled"
+    if pw not in valid_password_strength:
+        pw = "Strong"
+    if portal not in valid_captive_portal:
+        portal = "None"
 
+    # print("manual profile prepared for:", s)
     new_profile = {
-        "ssid": ssid,
-        "security": security,
-        "encryption": encryption,
-        "wps": wps,
-        "password_strength": password_strength,
-        "captive_portal": captive_portal
+        "ssid": s,
+        "security": sec,
+        "encryption": enc,
+        "wps": w,
+        "password_strength": pw,
+        "captive_portal": portal
     }
 
     raw_profiles = load_all_profiles()
     updated = False
-    for i, p in enumerate(raw_profiles):
-        if p.get("ssid", "").strip().lower() == ssid.lower():
+    for i in range(len(raw_profiles)):
+        p = raw_profiles[i]
+        if p.get("ssid", "").strip().lower() == s.lower():
             raw_profiles[i] = new_profile
             updated = True
             break
@@ -318,27 +359,28 @@ def manual_add():
     save_profiles(raw_profiles)
     eval_res = evaluate_wifi_risk(new_profile)
 
-    flash(f"Manual profile for '{ssid}' added! Risk Level: [{eval_res['risk_level']}] (Score: {eval_res['score']}/100).", "success")
+    flash(f"Manual profile for '{s}' added! Risk Level: [{eval_res['risk_level']}] (Score: {eval_res['score']}/100).", "success")
     return redirect(url_for('dashboard'))
 
 
 @app.route('/export/<format_type>')
 def export_report(format_type):
-    """Export evaluated profiles as JSON or CSV."""
+    # export csv or json report
+    # could be viva qn
     if 'username' not in session:
         flash("Please log in to export reports.", "warning")
         return redirect(url_for('login'))
 
-    raw_profiles = load_all_profiles()
-    summary = batch_process_profiles(raw_profiles)
+    raw_data = load_all_profiles()
+    summary_obj = batch_process_profiles(raw_data)
 
     if format_type == 'json':
         export_data = {
             "report_title": "Check the WifiSec Evaluation Report",
             "generated_by": session['username'],
-            "total_profiles": summary["total_profiles"],
-            "risk_counts": summary["risk_counts"],
-            "profiles": summary["evaluated_profiles"]
+            "total_profiles": summary_obj["total_profiles"],
+            "risk_counts": summary_obj["risk_counts"],
+            "profiles": summary_obj["evaluated_profiles"]
         }
         return Response(
             json.dumps(export_data, indent=4),
@@ -347,18 +389,23 @@ def export_report(format_type):
         )
 
     elif format_type == 'csv':
-        output = io.StringIO()
-        writer = csv.writer(output)
-        writer.writerow([
+        out_buffer = io.StringIO()
+        csv_writer = csv.writer(out_buffer)
+        csv_writer.writerow([
             "SSID", "Security", "Encryption", "Captive Portal", "WPS",
             "Password Strength", "Risk Level", "Score (0-100)",
             "Vulnerability Count", "Vulnerabilities", "Recommendations"
         ])
 
-        for p in summary["evaluated_profiles"]:
-            vulns = "; ".join([f"[{v['severity']}] {v['title']}" for v in p.get("patterns", [])])
-            recs = "; ".join(p.get("recommendations", []))
-            writer.writerow([
+        # procedural loop
+        for p in summary_obj["evaluated_profiles"]:
+            v_list = []
+            for v in p.get("patterns", []):
+                v_list.append(f"[{v['severity']}] {v['title']}")
+            vulns_str = "; ".join(v_list)
+            recs_str = "; ".join(p.get("recommendations", []))
+
+            csv_writer.writerow([
                 p.get("ssid", "Unknown"),
                 p.get("security", "Unknown"),
                 p.get("encryption", "Unknown"),
@@ -368,12 +415,12 @@ def export_report(format_type):
                 p.get("risk_level", "LOW"),
                 p.get("score", 0),
                 len(p.get("patterns", [])),
-                vulns,
-                recs
+                vulns_str,
+                recs_str
             ])
 
         return Response(
-            output.getvalue(),
+            out_buffer.getvalue(),
             mimetype="text/csv",
             headers={"Content-Disposition": "attachment;filename=wifi_security_report.csv"}
         )
@@ -383,6 +430,8 @@ def export_report(format_type):
         return redirect(url_for('dashboard'))
 
 
+
 if __name__ == '__main__':
+    # print("got to this point value is:", 5000)
     print("Starting Check the WifiSec Web App on http://127.0.0.1:5000")
     app.run(debug=True, port=5000)

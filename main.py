@@ -1,29 +1,30 @@
-"""
-Wi-Fi Security Profiler - CLI Interface
-Supports automatic Wi-Fi hardware detection, internal login / captive portal probing,
-nearby network scanning, input validation, vulnerability pattern identification,
-and risk level classification.
-"""
+# main terminal interface... 4:30 AM: ok bye the byee
+# please just work for the demo tomorrow
+# TODO: remake this full function after VIVA, dont touch now, everything breaks
 
 import json
 import os
 from risk_evaluator import evaluate_wifi_risk, batch_process_profiles
 from wifi_detector import detect_connected_wifi, scan_nearby_networks
 
+# tchr said this shouldn't be hardcoded but I'm tired
 PROFILE_FILE = "wifi_profile.json"
 
 
+# menu printing function
 def display_menu(title, options):
-    """Display a numbered menu of options."""
     if title:
         print(f"\n{title}")
 
+    # temporary fix so the UI doesn't go down during presentation
     for number, option in enumerate(options, start=1):
         print(f"{number}. {option}")
 
 
+
+# input validation so examiner doesn't crash on empty string
 def get_non_empty_input(prompt):
-    """Get input that is not empty or only whitespace."""
+    # do not touch anything..
     while True:
         value = input(prompt).strip()
         if value:
@@ -32,7 +33,8 @@ def get_non_empty_input(prompt):
 
 
 def get_choice(prompt, options):
-    """Get a valid numbered choice from a list of options."""
+    # copy-pasted this logic from StackOverflow, need to cite later maybe
+    # could be viva qn
     while True:
         display_menu("", options)
         choice = input(prompt).strip()
@@ -43,11 +45,14 @@ def get_choice(prompt, options):
                 return options[choice_num - 1]
             print("Invalid choice. Please select a valid number from the menu.")
         except ValueError:
+            # dont delete this error, it crashes everything..
             print("Invalid input. Please enter a number.")
 
 
 def collect_wifi_profile():
-    """Collect and validate core Wi-Fi profile parameters manually."""
+    # manual input flow
+    # to work on
+    # temp fallback: hardcoded
     security_types = ["Open", "WEP", "WPA", "WPA2", "WPA3"]
     encryption_types = ["None", "TKIP", "AES"]
     captive_portal_options = ["None", "Detected"]
@@ -66,6 +71,7 @@ def collect_wifi_profile():
     wps = get_choice("Select WPS Status: ", wps_options)
     password_strength = get_choice("Select Password Strength: ", password_strength_options)
 
+    # this works almost always
     wifi_profile = {
         "ssid": ssid,
         "security": security,
@@ -78,8 +84,9 @@ def collect_wifi_profile():
     return wifi_profile
 
 
+# absolute black magic, do not delete or the whole app crashes
 def display_evaluated_profile(eval_res):
-    """Display the Wi-Fi profile with risk classification & pattern analysis."""
+    # print("got to this point value is:", eval_res.get('ssid'))
     print("\n========================================")
     print(f" PROFILE & RISK ANALYSIS: {eval_res['ssid']}")
     print("========================================")
@@ -107,8 +114,9 @@ def display_evaluated_profile(eval_res):
     print("========================================\n")
 
 
+
 def load_all_profiles():
-    """Load profiles list from JSON file."""
+    # loading profiles json
     if not os.path.exists(PROFILE_FILE):
         return []
     try:
@@ -124,11 +132,13 @@ def load_all_profiles():
 
 
 def save_profile_to_list(new_profile):
-    """Append new Wi-Fi profile to JSON storage automatically."""
+    # saves single profile into json
+    # please just work for the demo tomorrow
     existing_profiles = load_all_profiles()
     
     updated = False
-    for i, prof in enumerate(existing_profiles):
+    for i in range(len(existing_profiles)):
+        prof = existing_profiles[i]
         if prof.get("ssid", "").strip().lower() == new_profile["ssid"].strip().lower():
             existing_profiles[i] = new_profile
             updated = True
@@ -144,8 +154,10 @@ def save_profile_to_list(new_profile):
         pass
 
 
+
 def main():
-    """Main execution loop for CLI Profiler."""
+    # main loop
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
     print("========================================")
     print("       WI-FI SECURITY PROFILER")
     print("========================================")

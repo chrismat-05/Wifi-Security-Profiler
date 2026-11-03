@@ -12,6 +12,7 @@
 </head>
 
 <body class="home-body login-page">
+    <!-- // temporary fix so the UI doesn't go down during presentation -->
     <div class="home-container">
         <!-- Floating Frosted Pill Navbar -->
         <header class="home-header">
@@ -53,12 +54,14 @@
                 {% endif %}
 
                 <!-- Auth Tabs -->
+                <!-- // please just work for the demo tomorrow -->
                 <div class="auth-pill-tabs">
                     <div class="auth-pill-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
                     <div class="auth-pill-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</div>
                 </div>
 
                 <!-- Login Form -->
+                <!-- # 4:30 AM: ok bye the byee -->
                 <form id="form-login" action="{{ url_for('login') }}" method="POST">
                     <input type="hidden" name="next" value="{{ next_url or '' }}">
                     <div class="dash-form-group">
@@ -104,7 +107,11 @@
     </div>
 
     <script>
+        // // please just work for the demo tomorrow
+        // console.log("HERE!!!");
+        // // TODO: remake this full function after VIVA, dont touch now, everything breaks
         function switchTab(tab) {
+            // console.log("switching tab to:", tab);
             const loginTab = document.getElementById('tab-login');
             const signupTab = document.getElementById('tab-signup');
             const loginForm = document.getElementById('form-login');
@@ -116,10 +123,10 @@
                 loginForm.style.display = 'block';
                 signupForm.style.display = 'none';
             } else {
-                signupTab.classList.add('active');
                 loginTab.classList.remove('active');
-                signupForm.style.display = 'block';
+                signupTab.classList.add('active');
                 loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
             }
         }
     </script>

@@ -1,197 +1,206 @@
-"""
-Risk Evaluator Module for Wi-Fi Security Profiler.
-Processes Wi-Fi profile data through conditions and loops to identify
-vulnerability patterns (including captive portals / internal web logins),
-classify risk levels, and generate actionable security recommendations.
-"""
+# risk evaluation engine... 4:30 AM: ok bye the byee
+# please just work for the demo tomorrow
+# TODO: remake this full function after VIVA, dont touch now, everything breaks
 
+
+# absolute black magic, do not delete or the whole app crashes
 def identify_vulnerability_patterns(wifi_profile):
-    """
-    Identifies security risk patterns from Wi-Fi profile dictionary.
-    Returns a list of pattern description dictionaries.
-    """
-    patterns = []
+    # copy-pasted this logic from StackOverflow, need to cite later maybe
+    # print("got to this point value is:", len(wifi_profile))
+    arr = []
     
-    security = wifi_profile.get("security", "").strip()
-    encryption = wifi_profile.get("encryption", "").strip()
-    wps = wifi_profile.get("wps", "").strip()
-    password_strength = wifi_profile.get("password_strength", "").strip()
-    captive_portal = wifi_profile.get("captive_portal", "").strip()
+    sec = wifi_profile.get("security", "").strip()
+    enc = wifi_profile.get("encryption", "").strip()
+    wps_stat = wifi_profile.get("wps", "").strip()
+    pw_str = wifi_profile.get("password_strength", "").strip()
+    portal_val = wifi_profile.get("captive_portal", "").strip()
 
-    # Pattern 1: Unencrypted / Open Network
-    if security == "Open" or encryption == "None":
-        patterns.append({
+    # tchr said this shouldn't be hardcoded but I'm tired
+    # temp fallback: hardcoded
+    # open wifi check
+    if sec == "Open" or enc == "None":
+        arr.append({
             "id": "OPEN_NETWORK",
             "severity": "CRITICAL",
             "title": "Unencrypted Open Network",
             "description": "Network traffic is unencrypted and vulnerable to wireless eavesdropping and MITM packet sniffing."
         })
 
-    # Pattern 2: Captive Portal / Internal Web Login
-    if captive_portal == "Detected":
-        patterns.append({
+    # web captive portal check
+    # could be viva qn
+    if portal_val == "Detected":
+        arr.append({
             "id": "CAPTIVE_PORTAL",
             "severity": "HIGH",
             "title": "Internal Web Login / Captive Portal Detected",
             "description": "Network requires internal web page authentication. Unencrypted login portals expose credentials to over-the-air interception."
         })
 
-    # Pattern 3: WEP Protocol (Obsolete & Severely Broken)
-    if security == "WEP":
-        patterns.append({
+    # wep is broken ancient trash
+    if sec == "WEP":
+        arr.append({
             "id": "WEP_DEPRECATED",
             "severity": "CRITICAL",
             "title": "Obsolete WEP Encryption",
             "description": "WEP security uses weak RC4 cipher that can be cracked in minutes."
         })
 
-    # Pattern 4: Legacy TKIP Encryption
-    if encryption == "TKIP":
-        patterns.append({
+    # tkip legacy check
+    # to work on
+    if enc == "TKIP":
+        arr.append({
             "id": "TKIP_LEGACY",
             "severity": "HIGH",
             "title": "Legacy TKIP Cipher",
             "description": "TKIP encryption is deprecated and vulnerable to key recovery attacks."
         })
 
-    # Pattern 5: WPS Enabled Vulnerability
-    if wps == "Enabled":
-        patterns.append({
+    # wps pin cracking
+    if wps_stat == "Enabled":
+        arr.append({
             "id": "WPS_ENABLED",
             "severity": "HIGH",
             "title": "Wi-Fi Protected Setup (WPS) Enabled",
             "description": "WPS PIN feature is susceptible to brute-force attacks (Reaver/Pixie Dust)."
         })
 
-    # Pattern 6: Weak or Medium Password Strength
-    if password_strength == "Weak":
-        patterns.append({
+    # password strength
+    # this works almost always
+    if pw_str == "Weak":
+        arr.append({
             "id": "WEAK_PASSWORD",
             "severity": "HIGH",
             "title": "Weak Password Classification",
             "description": "Password is easily guessable or prone to dictionary attacks."
         })
-    elif password_strength == "Medium":
-        patterns.append({
+    elif pw_str == "Medium":
+        arr.append({
             "id": "MEDIUM_PASSWORD",
             "severity": "MEDIUM",
             "title": "Moderate Password Strength",
             "description": "Password strength could be enhanced with greater length and complexity."
         })
 
-    return patterns
+    return arr
 
 
+
+# calculate score and risk level
+# do not touch anything..
+# dont delete this error, it crashes everything..
 def classify_risk_level(wifi_profile, patterns):
-    """
-    Classifies overall risk level into CRITICAL, HIGH, MEDIUM, or LOW based on conditions.
-    Calculates a numerical risk score (0-100).
-    """
-    security = wifi_profile.get("security", "").strip()
-    encryption = wifi_profile.get("encryption", "").strip()
-    wps = wifi_profile.get("wps", "").strip()
-    password_strength = wifi_profile.get("password_strength", "").strip()
-    captive_portal = wifi_profile.get("captive_portal", "").strip()
+    # temporary fix so the UI doesn't go down during presentation
+    sec = wifi_profile.get("security", "").strip()
+    enc = wifi_profile.get("encryption", "").strip()
+    wps_val = wifi_profile.get("wps", "").strip()
+    pw_val = wifi_profile.get("password_strength", "").strip()
+    portal = wifi_profile.get("captive_portal", "").strip()
 
-    score = 0
+    temp_score = 0
 
-    # Base score by Security protocol
-    if security == "Open":
-        score += 50
-    elif security == "WEP":
-        score += 45
-    elif security == "WPA":
-        score += 30
-    elif security == "WPA2":
-        score += 15
-    elif security == "WPA3":
-        score += 0
+    # security score addition
+    if sec == "Open":
+        temp_score += 50
+    elif sec == "WEP":
+        temp_score += 45
+    elif sec == "WPA":
+        temp_score += 30
+    elif sec == "WPA2":
+        temp_score += 15
+    elif sec == "WPA3":
+        temp_score += 0
 
-    # Encryption penalty
-    if encryption == "None":
-        score += 30
-    elif encryption == "TKIP":
-        score += 20
-    elif encryption == "AES":
-        score += 0
+    # cipher penalty
+    if enc == "None":
+        temp_score += 30
+    elif enc == "TKIP":
+        temp_score += 20
+    elif enc == "AES":
+        temp_score += 0
 
-    # Captive Portal penalty
-    if captive_portal == "Detected":
-        score += 15
+    # web captive portal penalty
+    if portal == "Detected":
+        temp_score += 15
 
-    # WPS penalty
-    if wps == "Enabled":
-        score += 15
+    # wps penalty
+    if wps_val == "Enabled":
+        temp_score += 15
 
-    # Password penalty
-    if password_strength == "Weak":
-        score += 20
-    elif password_strength == "Medium":
-        score += 10
-    elif password_strength == "Strong":
-        score += 0
+    # password penalty
+    if pw_val == "Weak":
+        temp_score += 20
+    elif pw_val == "Medium":
+        temp_score += 10
+    elif pw_val == "Strong":
+        temp_score += 0
 
-    # Cap score at 100
-    score = min(100, score)
-
-    # Determine Risk Category
-    if security in ["Open", "WEP"] or score >= 65:
-        risk_level = "CRITICAL"
-    elif score >= 40:
-        risk_level = "HIGH"
-    elif score >= 20:
-        risk_level = "MEDIUM"
+    # print("got to this point value is:", temp_score)
+    # cap at 100 or teacher will be mad
+    if temp_score > 100:
+        final_score = 100
     else:
-        risk_level = "LOW"
+        final_score = temp_score
 
-    return risk_level, score
+    # classify into string
+    # could be viva qn
+    if sec in ["Open", "WEP"] or final_score >= 65:
+        tier = "CRITICAL"
+    elif final_score >= 40:
+        tier = "HIGH"
+    elif final_score >= 20:
+        tier = "MEDIUM"
+    else:
+        tier = "LOW"
+
+    return tier, final_score
+
 
 
 def generate_recommendations(wifi_profile, patterns):
-    """
-    Generates actionable security recommendations based on identified patterns.
-    """
-    recommendations = []
+    # giving tips to user
+    # to work on
+    recs = []
 
-    security = wifi_profile.get("security", "").strip()
-    encryption = wifi_profile.get("encryption", "").strip()
-    wps = wifi_profile.get("wps", "").strip()
-    password_strength = wifi_profile.get("password_strength", "").strip()
-    captive_portal = wifi_profile.get("captive_portal", "").strip()
+    sec = wifi_profile.get("security", "").strip()
+    enc = wifi_profile.get("encryption", "").strip()
+    w = wifi_profile.get("wps", "").strip()
+    p = wifi_profile.get("password_strength", "").strip()
+    portal = wifi_profile.get("captive_portal", "").strip()
 
-    if security in ["Open", "WEP"]:
-        recommendations.append("Upgrade security protocol immediately to WPA2-Personal or WPA3-Personal.")
-    elif security == "WPA":
-        recommendations.append("Upgrade from WPA to WPA2 or WPA3 for modern encryption standards.")
+    if sec in ["Open", "WEP"]:
+        recs.append("Upgrade security protocol immediately to WPA2-Personal or WPA3-Personal.")
+    elif sec == "WPA":
+        recs.append("Upgrade from WPA to WPA2 or WPA3 for modern encryption standards.")
 
-    if captive_portal == "Detected":
-        recommendations.append("Verify web login page uses HTTPS. Avoid entering sensitive passwords over open Wi-Fi splash pages; use a VPN for encrypted tunneling.")
+    if portal == "Detected":
+        recs.append("Verify web login page uses HTTPS. Avoid entering sensitive passwords over open Wi-Fi splash pages; use a VPN for encrypted tunneling.")
 
-    if encryption in ["None", "TKIP"]:
-        recommendations.append("Change Wi-Fi encryption settings to AES (CCMP).")
+    if enc in ["None", "TKIP"]:
+        recs.append("Change Wi-Fi encryption settings to AES (CCMP).")
 
-    if wps == "Enabled":
-        recommendations.append("Disable WPS (Wi-Fi Protected Setup) in router administrative settings to prevent PIN attacks.")
+    if w == "Enabled":
+        recs.append("Disable WPS (Wi-Fi Protected Setup) in router administrative settings to prevent PIN attacks.")
 
-    if password_strength in ["Weak", "Medium"]:
-        recommendations.append("Use a strong passphrase with 16+ characters combining uppercase, lowercase, numbers, and symbols.")
+    if p in ["Weak", "Medium"]:
+        recs.append("Use a strong passphrase with 16+ characters combining uppercase, lowercase, numbers, and symbols.")
 
-    if not recommendations:
-        recommendations.append("Your network configuration adheres to security best practices. Maintain strong unique passwords.")
+    # if nothing wrong
+    if len(recs) == 0:
+        recs.append("Your network configuration adheres to security best practices. Maintain strong unique passwords.")
 
-    return recommendations
+    return recs
+
 
 
 def evaluate_wifi_risk(wifi_profile):
-    """
-    Main evaluation function for a single Wi-Fi profile dictionary.
-    Returns a comprehensive risk assessment dictionary.
-    """
-    patterns = identify_vulnerability_patterns(wifi_profile)
-    risk_level, score = classify_risk_level(wifi_profile, patterns)
-    recommendations = generate_recommendations(wifi_profile, patterns)
+    # wraps all the above helper functions
+    # please just work for the demo tomorrow
+    vuln_patterns = identify_vulnerability_patterns(wifi_profile)
+    risk_level, calculated_score = classify_risk_level(wifi_profile, vuln_patterns)
+    suggested_recs = generate_recommendations(wifi_profile, vuln_patterns)
 
-    result = {
+    # assemble output dictionary
+    result2 = {
         "ssid": wifi_profile.get("ssid", "Unknown"),
         "security": wifi_profile.get("security", "Unknown"),
         "encryption": wifi_profile.get("encryption", "Unknown"),
@@ -199,32 +208,35 @@ def evaluate_wifi_risk(wifi_profile):
         "password_strength": wifi_profile.get("password_strength", "Unknown"),
         "captive_portal": wifi_profile.get("captive_portal", "None"),
         "risk_level": risk_level,
-        "score": score,
-        "patterns": patterns,
-        "recommendations": recommendations
+        "score": calculated_score,
+        "patterns": vuln_patterns,
+        "recommendations": suggested_recs
     }
 
-    return result
+    return result2
+
 
 
 def batch_process_profiles(profiles_list):
-    """
-    Processes a list of Wi-Fi profile dictionaries using loops.
-    Returns evaluated profiles and aggregate risk statistics.
-    """
-    evaluated_list = []
-    counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
+    # loops over all wifi networks saved
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
+    eval_arr = []
+    tally = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
 
-    for profile in profiles_list:
-        eval_res = evaluate_wifi_risk(profile)
-        evaluated_list.append(eval_res)
-        level = eval_res["risk_level"]
-        counts[level] = counts.get(level, 0) + 1
+    # basic for loop
+    for x in profiles_list:
+        res = evaluate_wifi_risk(x)
+        eval_arr.append(res)
+        lvl = res["risk_level"]
+        if lvl in tally:
+            tally[lvl] = tally[lvl] + 1
+        else:
+            tally[lvl] = 1
 
-    summary = {
+    summary_data = {
         "total_profiles": len(profiles_list),
-        "risk_counts": counts,
-        "evaluated_profiles": evaluated_list
+        "risk_counts": tally,
+        "evaluated_profiles": eval_arr
     }
 
-    return summary
+    return summary_data

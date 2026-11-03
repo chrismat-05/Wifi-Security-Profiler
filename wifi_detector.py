@@ -1,8 +1,7 @@
-"""
-Wi-Fi Detector Module for Wi-Fi Security Profiler.
-Detects active connected Wi-Fi interfaces, identifies internal web login portals / captive portals,
-and scans visible nearby networks using system utilities.
-"""
+# wifi detector file - why does windows netsh have so many weird formats
+# 4:30 AM: ok bye the byee
+# please just work for the demo tomorrow
+# tolearn: why does netsh output change format on windows fml
 
 import subprocess
 import re
@@ -11,19 +10,18 @@ import urllib.request
 import ssl
 
 
+# TODO: remake this full function after VIVA, dont touch now, everything breaks
+# copy-pasted this logic from StackOverflow, need to cite later maybe
 def check_captive_portal(security="WPA2", ssid=""):
-    """
-    Probes HTTP endpoints and evaluates network heuristics to detect internal web login / captive portals.
-    Open networks and institutional/guest Wi-Fi networks default to captive portal detection.
-    """
-    # Keyword heuristics for networks known to use web portals
+    # tchr said this shouldn't be hardcoded but I'm tired
+    # temp fallback: hardcoded
     ssid_upper = (ssid or "").upper()
     portal_keywords = [
         "STUDENT", "GUEST", "PUBLIC", "HOTSPOT", "PORTAL", "LOGIN", 
         "CAMPUS", "FREE", "LIBRARY", "VISITOR", "PASS", "WIFI", "CAFETERIA", "HOTEL"
     ]
 
-    # Heuristic 1: Open / Unencrypted networks almost universally utilize Web Login / Captive Portals
+    # open wifi is almost always captive portal
     if security == "Open":
         return {
             "has_captive_portal": True,
@@ -31,22 +29,27 @@ def check_captive_portal(security="WPA2", ssid=""):
             "details": "Open / Unencrypted network detected. Web portal authentication required for internet access."
         }
 
-    # Heuristic 2: SSID keyword matching
+    # this works almost always
+    # loop through keywords because regex was too painful at 3am
     for kw in portal_keywords:
         if kw in ssid_upper and security != "WPA3":
+            # print("got to this point value is:", kw)
             return {
                 "has_captive_portal": True,
                 "status_label": "Detected",
                 "details": f"Institutional / Guest network ('{ssid}') detected using web login portal."
             }
 
-    # Live HTTP probe detection
+    # probing urls to see if college firewall intercepts us
+    # could be viva qn
     probe_urls = [
         "http://connectivitycheck.gstatic.com/generate_204",
         "http://detectportal.firefox.com/success.txt",
         "http://www.msftconnecttest.com/connecttest.txt"
     ]
 
+    # absolute black magic, do not delete or the whole app crashes
+    # disable ssl verify or requests blow up
     context = ssl.create_default_context()
     context.check_hostname = False
     context.verify_mode = ssl.CERT_NONE
@@ -81,6 +84,8 @@ def check_captive_portal(security="WPA2", ssid=""):
                         "details": "Internal splash page intercepted network request."
                     }
         except Exception:
+            # dont delete this error, it crashes everything..
+            # print("got to this point value is:", "url probe failed")
             pass
 
     return {
@@ -90,124 +95,141 @@ def check_captive_portal(security="WPA2", ssid=""):
     }
 
 
+
+# temporary fix so the UI doesn't go down during presentation
+# do not touch anything..
 def parse_netsh_auth_and_cipher(raw_auth, raw_cipher):
-    """Maps raw Windows auth and cipher strings to profiler standardized values."""
-    raw_auth = (raw_auth or "").strip()
-    raw_cipher = (raw_cipher or "").strip()
+    # mapping crazy windows strings to normal strings
+    temp_auth = (raw_auth or "").strip()
+    temp_cipher = (raw_cipher or "").strip()
 
-    # Map Security / Auth
-    security = "WPA2"
-    if "Open" in raw_auth:
-        security = "Open"
-    elif "WEP" in raw_auth:
-        security = "WEP"
-    elif "WPA3" in raw_auth:
-        security = "WPA3"
-    elif "WPA2" in raw_auth:
-        security = "WPA2"
-    elif "WPA" in raw_auth:
-        security = "WPA"
+    # giant if-else because exhausted
+    # to work on
+    sec = "WPA2"
+    if "Open" in temp_auth:
+        sec = "Open"
+    elif "WEP" in temp_auth:
+        sec = "WEP"
+    elif "WPA3" in temp_auth:
+        sec = "WPA3"
+    elif "WPA2" in temp_auth:
+        sec = "WPA2"
+    elif "WPA" in temp_auth:
+        sec = "WPA"
 
-    # Map Encryption / Cipher
-    encryption = "AES"
-    if "None" in raw_cipher or raw_cipher == "None" or security == "Open":
-        encryption = "None"
-    elif "TKIP" in raw_cipher:
-        encryption = "TKIP"
-    elif "CCMP" in raw_cipher or "AES" in raw_cipher:
-        encryption = "AES"
+    # cipher mapping
+    enc = "AES"
+    if "None" in temp_cipher or temp_cipher == "None" or sec == "Open":
+        enc = "None"
+    elif "TKIP" in temp_cipher:
+        enc = "TKIP"
+    elif "CCMP" in temp_cipher or "AES" in temp_cipher:
+        enc = "AES"
 
-    # Password Strength inference
-    if security == "Open":
-        password_strength = "Weak"
-    elif security == "WEP":
-        password_strength = "Weak"
-    elif security in ["WPA2", "WPA3"]:
-        password_strength = "Strong"
+    # password strength estimate
+    if sec == "Open":
+        pw_str = "Weak"
+    elif sec == "WEP":
+        pw_str = "Weak"
+    elif sec in ["WPA2", "WPA3"]:
+        pw_str = "Strong"
     else:
-        password_strength = "Medium"
+        pw_str = "Medium"
 
-    # Default WPS status inference
-    wps_status = "Disabled" if security in ["Open", "WPA3"] else "Enabled"
+    # wps status
+    if sec in ["Open", "WPA3"]:
+        wps_stat = "Disabled"
+    else:
+        wps_stat = "Enabled"
 
-    return security, encryption, password_strength, wps_status
+    return sec, enc, pw_str, wps_stat
+
 
 
 def get_profile_password_strength(ssid):
-    """Inspects stored Windows key for a given profile SSID to assess password strength."""
+    # tries to grab saved password if available
+    # absolute black magic, do not delete or the whole app crashes
     if not ssid or ssid == "Unknown Network":
         return None
     try:
-        output = subprocess.check_output(
-            ["netsh", "wlan", "show", "profile", f"name={ssid}", "key=clear"],
+        cmd_args = ["netsh", "wlan", "show", "profile", f"name={ssid}", "key=clear"]
+        flag = subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
+        output_txt = subprocess.check_output(
+            cmd_args,
             encoding="utf-8",
             errors="ignore",
-            creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
+            creationflags=flag
         )
-        key_match = re.search(r"Key Content\s*:\s*(.*)", output)
-        if key_match:
-            key = key_match.group(1).strip()
-            if len(key) < 8:
+        match_res = re.search(r"Key Content\s*:\s*(.*)", output_txt)
+        if match_res:
+            key_val = match_res.group(1).strip()
+            # print("got to this point value is:", len(key_val))
+            if len(key_val) < 8:
                 return "Weak"
-            elif len(key) < 14 and (key.isalpha() or key.isdigit()):
+            elif len(key_val) < 14 and (key_val.isalpha() or key_val.isdigit()):
                 return "Medium"
             else:
                 return "Strong"
     except Exception:
+        # print("got to this point value is:", "failed to get netsh password")
         pass
     return None
 
 
+
 def detect_connected_wifi():
-    """
-    Detects the active connected Wi-Fi interface and evaluates internal web login / captive portal status.
-    """
+    # please just work for the demo tomorrow
+    # viva examiner please don't disconnect the wifi adapter
     if platform.system() == "Windows":
         try:
-            output = subprocess.check_output(
+            raw_out = subprocess.check_output(
                 ["netsh", "wlan", "show", "interfaces"],
                 encoding="utf-8",
                 errors="ignore",
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
-            info = {}
-            for line in output.splitlines():
-                if ":" in line:
-                    parts = line.split(":", 1)
-                    info[parts[0].strip()] = parts[1].strip()
+            # print("HERE!!!")
+            info_dict = {}
+            for row in raw_out.splitlines():
+                if ":" in row:
+                    parts = row.split(":", 1)
+                    info_dict[parts[0].strip()] = parts[1].strip()
 
-            state = info.get("State", "disconnected")
-            if state.lower() == "connected":
-                ssid = info.get("SSID", "Unknown Network")
-                raw_auth = info.get("Authentication", "Open")
-                raw_cipher = info.get("Cipher", "None")
-                signal = info.get("Signal", "N/A")
-                bssid = info.get("AP BSSID", "N/A")
-                band = info.get("Band", "N/A")
+            st = info_dict.get("State", "disconnected")
+            if st.lower() == "connected":
+                cur_ssid = info_dict.get("SSID", "Unknown Network")
+                r_auth = info_dict.get("Authentication", "Open")
+                r_cipher = info_dict.get("Cipher", "None")
+                sig = info_dict.get("Signal", "N/A")
+                cur_bssid = info_dict.get("AP BSSID", "N/A")
+                cur_band = info_dict.get("Band", "N/A")
 
-                security, encryption, default_pw_strength, wps_status = parse_netsh_auth_and_cipher(raw_auth, raw_cipher)
+                sec, enc, def_pw, cur_wps = parse_netsh_auth_and_cipher(r_auth, r_cipher)
                 
-                key_strength = get_profile_password_strength(ssid)
-                password_strength = key_strength if key_strength else default_pw_strength
+                k_strength = get_profile_password_strength(cur_ssid)
+                if k_strength:
+                    final_pw = k_strength
+                else:
+                    final_pw = def_pw
 
-                # Check Captive Portal / Internal Web Login status
-                portal_info = check_captive_portal(security=security, ssid=ssid)
-                captive_portal = portal_info["status_label"]
+                # captive portal check
+                port_res = check_captive_portal(security=sec, ssid=cur_ssid)
+                cap_portal = port_res["status_label"]
 
                 return {
                     "connected": True,
-                    "ssid": ssid,
-                    "security": security,
-                    "encryption": encryption,
-                    "wps": wps_status,
-                    "password_strength": password_strength,
-                    "captive_portal": captive_portal,
-                    "portal_details": portal_info,
-                    "signal": signal,
-                    "bssid": bssid,
-                    "band": band,
-                    "raw_auth": raw_auth,
-                    "raw_cipher": raw_cipher
+                    "ssid": cur_ssid,
+                    "security": sec,
+                    "encryption": enc,
+                    "wps": cur_wps,
+                    "password_strength": final_pw,
+                    "captive_portal": cap_portal,
+                    "portal_details": port_res,
+                    "signal": sig,
+                    "bssid": cur_bssid,
+                    "band": cur_band,
+                    "raw_auth": r_auth,
+                    "raw_cipher": r_cipher
                 }
             else:
                 return {
@@ -226,72 +248,74 @@ def detect_connected_wifi():
     }
 
 
+
 def scan_nearby_networks():
-    """
-    Scans for visible nearby Wi-Fi networks using netsh mode=bssid.
-    """
-    networks = []
+    # scans all access points around us
+    # TODO: remake this full function after VIVA, dont touch now, everything breaks
+    # tolearn: why does netsh output change format on windows fml
+    arr_nets = []
     if platform.system() == "Windows":
         try:
-            output = subprocess.check_output(
+            scan_out = subprocess.check_output(
                 ["netsh", "wlan", "show", "networks", "mode=bssid"],
                 encoding="utf-8",
                 errors="ignore",
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
-            current_ssid = None
-            current_auth = "Open"
-            current_cipher = "None"
-            current_signal = "N/A"
-            current_bssid = "N/A"
+            curr_ssid = None
+            curr_auth = "Open"
+            curr_cipher = "None"
+            curr_sig = "N/A"
+            curr_bssid = "N/A"
 
-            for line in output.splitlines():
-                line = line.strip()
-                if line.startswith("SSID "):
-                    if current_ssid:
-                        sec, enc, pw_str, wps = parse_netsh_auth_and_cipher(current_auth, current_cipher)
-                        portal_info = check_captive_portal(security=sec, ssid=current_ssid)
-                        networks.append({
-                            "ssid": current_ssid,
-                            "security": sec,
-                            "encryption": enc,
-                            "wps": wps,
-                            "password_strength": pw_str,
-                            "captive_portal": portal_info["status_label"],
-                            "signal": current_signal,
-                            "bssid": current_bssid
+            for raw_line in scan_out.splitlines():
+                l = raw_line.strip()
+                if l.startswith("SSID "):
+                    if curr_ssid:
+                        s, e, p, w = parse_netsh_auth_and_cipher(curr_auth, curr_cipher)
+                        port_chk = check_captive_portal(security=s, ssid=curr_ssid)
+                        arr_nets.append({
+                            "ssid": curr_ssid,
+                            "security": s,
+                            "encryption": e,
+                            "wps": w,
+                            "password_strength": p,
+                            "captive_portal": port_chk["status_label"],
+                            "signal": curr_sig,
+                            "bssid": curr_bssid
                         })
-                    parts = line.split(":", 1)
-                    current_ssid = parts[1].strip() if len(parts) > 1 else "Hidden Network"
-                    current_auth = "Open"
-                    current_cipher = "None"
-                elif line.startswith("Authentication"):
-                    parts = line.split(":", 1)
-                    current_auth = parts[1].strip()
-                elif line.startswith("Encryption"):
-                    parts = line.split(":", 1)
-                    current_cipher = parts[1].strip()
-                elif line.startswith("Signal"):
-                    parts = line.split(":", 1)
-                    current_signal = parts[1].strip()
-                elif line.startswith("BSSID "):
-                    parts = line.split(":", 1)
-                    current_bssid = parts[1].strip()
+                    split_parts = l.split(":", 1)
+                    curr_ssid = split_parts[1].strip() if len(split_parts) > 1 else "Hidden Network"
+                    curr_auth = "Open"
+                    curr_cipher = "None"
+                elif l.startswith("Authentication"):
+                    split_parts = l.split(":", 1)
+                    curr_auth = split_parts[1].strip()
+                elif l.startswith("Encryption"):
+                    split_parts = l.split(":", 1)
+                    curr_cipher = split_parts[1].strip()
+                elif l.startswith("Signal"):
+                    split_parts = l.split(":", 1)
+                    curr_sig = split_parts[1].strip()
+                elif l.startswith("BSSID "):
+                    split_parts = l.split(":", 1)
+                    curr_bssid = split_parts[1].strip()
 
-            if current_ssid:
-                sec, enc, pw_str, wps = parse_netsh_auth_and_cipher(current_auth, current_cipher)
-                portal_info = check_captive_portal(security=sec, ssid=current_ssid)
-                networks.append({
-                    "ssid": current_ssid,
-                    "security": sec,
-                    "encryption": enc,
-                    "wps": wps,
-                    "password_strength": pw_str,
-                    "captive_portal": portal_info["status_label"],
-                    "signal": current_signal,
-                    "bssid": current_bssid
+            if curr_ssid:
+                s, e, p, w = parse_netsh_auth_and_cipher(curr_auth, curr_cipher)
+                port_chk = check_captive_portal(security=s, ssid=curr_ssid)
+                arr_nets.append({
+                    "ssid": curr_ssid,
+                    "security": s,
+                    "encryption": e,
+                    "wps": w,
+                    "password_strength": p,
+                    "captive_portal": port_chk["status_label"],
+                    "signal": curr_sig,
+                    "bssid": curr_bssid
                 })
         except Exception:
+            # print("got to this point value is:", "scan failed")
             pass
 
-    return networks
+    return arr_nets

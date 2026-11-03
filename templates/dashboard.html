@@ -13,6 +13,7 @@
 
 <body class="home-body dashboard-page">
     <div class="home-container">
+        <!-- // temporary fix so the UI doesn't go down during presentation -->
         <!-- Floating Frosted Pill Navbar -->
         <header class="home-header">
             <a href="{{ url_for('index') }}" class="home-logo">
@@ -37,6 +38,7 @@
             {% endif %}
         {% endwith %}
 
+        <!-- // please just work for the demo tomorrow -->
         <!-- Live Wireless Status Banner -->
         <section class="dash-live-card">
             <div class="dash-live-inner">
@@ -52,7 +54,7 @@
                         <p class="dash-live-specs">
                             Signal: <strong style="color: #ffffff;">{{ active_wifi.signal }}</strong> 
                             &bull; Security: <strong style="color: #ffffff;">{{ active_wifi.security }} ({{ active_wifi.encryption }})</strong> 
-                            &bull; Web Login: <strong style="{% if active_wifi.captive_portal == 'Detected' %}color: #f97316;{% else %}color: #84cc16;{% endif %}">{{ active_wifi.captive_portal }}</strong>
+                            &bull; Web Login: <strong class="{% if active_wifi.captive_portal == 'Detected' %}portal-live-detected{% else %}portal-live-clear{% endif %}">{{ active_wifi.captive_portal }}</strong>
                             {% if active_wifi.band %}&bull; Band: <strong style="color: #ffffff;">{{ active_wifi.band }}</strong>{% endif %}
                         </p>
                     {% else %}
@@ -82,6 +84,7 @@
                             Scan Nearby Access Points
                         </button>
                     </form>
+                    <!-- // copy-pasted this logic from StackOverflow, need to cite later maybe -->
                     <button type="button" class="btn-dark-pill" onclick="openManualAuditModal()" style="color: #84cc16; font-size: 0.88rem;">
                         + Manual Audit
                     </button>
@@ -89,6 +92,7 @@
             </div>
         </section>
 
+        <!-- // tchr said this shouldn't be hardcoded but I'm tired -->
         <!-- Risk Summary Bar -->
         <section class="dash-summary-bar" id="stats">
             <div class="dash-summary-card">
@@ -113,6 +117,7 @@
             </div>
         </section>
 
+        <!-- // absolute black magic, do not delete or the whole app crashes -->
         <!-- Evaluated Security Profiles Section -->
         <section id="profiles">
             <div class="dash-section-header">
@@ -149,6 +154,8 @@
                 </div>
             {% else %}
                 {% for p in evaluated_profiles %}
+                    <!-- // TODO: remake this full function after VIVA, dont touch now, everything breaks -->
+                    <!-- # this works almost always -->
                     <div class="dash-profile-card level-{{ p.risk_level }}">
                         <div class="dash-card-header">
                             <div class="dash-card-ssid">
@@ -175,7 +182,7 @@
                             </div>
                             <div class="dash-spec-item">
                                 <label>WEB LOGIN</label>
-                                <span style="{% if p.captive_portal == 'Detected' %}color: #ea580c; font-weight: 800;{% else %}color: #16a34a; font-weight: 700;{% endif %}">
+                                <span class="{% if p.captive_portal == 'Detected' %}portal-card-detected{% else %}portal-card-clear{% endif %}">
                                     {{ p.captive_portal }}
                                 </span>
                             </div>
@@ -291,7 +298,10 @@
     </div>
 
     <script>
+        // // please just work for the demo tomorrow
+        // console.log("HERE!!!");
         function openManualAuditModal() {
+            // console.log("opening modal at 3 am...");
             document.getElementById('manual-audit-modal').style.display = 'flex';
             document.getElementById('manual-ssid').focus();
         }
@@ -307,13 +317,19 @@
             }
         };
 
+        // // TODO: remake this full function after VIVA, dont touch now, everything breaks
+        // // copy-pasted this logic from StackOverflow, need to cite later maybe
+        // // do not touch anything..
+        // // dont delete this error, it crashes everything..
         function syncManualSecurityDefaults() {
+            // console.log("syncing dropdown defaults...");
             const sec = document.getElementById('manual-security').value;
             const enc = document.getElementById('manual-encryption');
             const portal = document.getElementById('manual-portal');
             const wps = document.getElementById('manual-wps');
             const pw = document.getElementById('manual-password');
 
+            // temp fallback: hardcoded
             if (sec === 'Open') {
                 enc.value = 'None';
                 portal.value = 'Detected';
