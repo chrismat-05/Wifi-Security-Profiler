@@ -7,7 +7,9 @@
     <title>Dashboard - Check the WifiSec</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -21,7 +23,8 @@
             </a>
 
             <div class="home-auth-group">
-                <span style="font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #475569; background: #f1f5f9; padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid #e2e8f0;">
+                <span
+                    style="font-size: 0.85rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: #475569; background: #f1f5f9; padding: 0.35rem 0.85rem; border-radius: 999px; border: 1px solid #e2e8f0;">
                     {{ username }}
                 </span>
                 <a href="{{ url_for('logout') }}" class="btn-pill-subtle">Sign Out</a>
@@ -29,13 +32,13 @@
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
 
         <!-- // please just work for the demo tomorrow -->
@@ -44,40 +47,45 @@
             <div class="dash-live-inner">
                 <div>
                     {% if active_wifi.connected %}
-                        <div class="dash-status-indicator" style="color: #84cc16;">
-                            <span class="indicator-dot online"></span>
-                            <span>Live System Wireless Status</span>
-                        </div>
-                        <div class="dash-live-ssid">
-                            {{ active_wifi.ssid }}
-                        </div>
-                        <p class="dash-live-specs">
-                            Signal: <strong style="color: #ffffff;">{{ active_wifi.signal }}</strong> 
-                            &bull; Security: <strong style="color: #ffffff;">{{ active_wifi.security }} ({{ active_wifi.encryption }})</strong> 
-                            &bull; Web Login: <strong class="{% if active_wifi.captive_portal == 'Detected' %}portal-live-detected{% else %}portal-live-clear{% endif %}">{{ active_wifi.captive_portal }}</strong>
-                            {% if active_wifi.band %}&bull; Band: <strong style="color: #ffffff;">{{ active_wifi.band }}</strong>{% endif %}
-                        </p>
+                    <div class="dash-status-indicator" style="color: #84cc16;">
+                        <span class="indicator-dot online"></span>
+                        <span>Live System Wireless Status</span>
+                    </div>
+                    <div class="dash-live-ssid">
+                        {{ active_wifi.ssid }}
+                    </div>
+                    <p class="dash-live-specs">
+                        Signal: <strong style="color: #ffffff;">{{ active_wifi.signal }}</strong>
+                        &bull; Security: <strong style="color: #ffffff;">{{ active_wifi.security }} ({{
+                            active_wifi.encryption }})</strong>
+                        &bull; Web Login: <strong
+                            class="{% if active_wifi.captive_portal == 'Detected' %}portal-live-detected{% else %}portal-live-clear{% endif %}">{{
+                            active_wifi.captive_portal }}</strong>
+                        {% if active_wifi.band %}&bull; Band: <strong style="color: #ffffff;">{{ active_wifi.band
+                            }}</strong>{% endif %}
+                    </p>
                     {% else %}
-                        <div class="dash-status-indicator" style="color: #f59e0b;">
-                            <span class="indicator-dot offline"></span>
-                            <span>Wireless Adapter Status</span>
-                        </div>
-                        <div class="dash-live-ssid" style="font-size: 1.25rem;">
-                            Interface Disconnected
-                        </div>
-                        <p class="dash-live-specs">
-                            {{ active_wifi.message or "No active connected Wi-Fi interface detected." }}
-                        </p>
+                    <div class="dash-status-indicator" style="color: #f59e0b;">
+                        <span class="indicator-dot offline"></span>
+                        <span>Wireless Adapter Status</span>
+                    </div>
+                    <div class="dash-live-ssid" style="font-size: 1.25rem;">
+                        Interface Disconnected
+                    </div>
+                    <p class="dash-live-specs">
+                        {{ active_wifi.message or "No active connected Wi-Fi interface detected." }}
+                    </p>
                     {% endif %}
                 </div>
 
                 <div class="dash-live-actions">
                     {% if active_wifi.connected %}
-                        <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
-                            <button type="submit" class="btn-hero-cta" style="padding: 0.65rem 1.35rem; font-size: 0.88rem; width: auto; cursor: pointer;">
-                                Analyze Connected Network
-                            </button>
-                        </form>
+                    <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
+                        <button type="submit" class="btn-hero-cta"
+                            style="padding: 0.65rem 1.35rem; font-size: 0.88rem; width: auto; cursor: pointer;">
+                            Analyze Connected Network
+                        </button>
+                    </form>
                     {% endif %}
                     <form action="{{ url_for('scan_and_add') }}" method="POST" style="margin: 0;">
                         <button type="submit" class="btn-dark-pill" style="font-size: 0.88rem;">
@@ -85,7 +93,8 @@
                         </button>
                     </form>
                     <!-- // copy-pasted this logic from StackOverflow, need to cite later maybe -->
-                    <button type="button" class="btn-dark-pill" onclick="openManualAuditModal()" style="color: #84cc16; font-size: 0.88rem;">
+                    <button type="button" class="btn-dark-pill" onclick="openManualAuditModal()"
+                        style="color: #84cc16; font-size: 0.88rem;">
                         + Manual Audit
                     </button>
                 </div>
@@ -126,109 +135,117 @@
                     <span class="count-badge">{{ summary.total_profiles }}</span>
                 </div>
                 <div style="display: flex; gap: 0.65rem;">
-                    <a href="{{ url_for('export_report', format_type='csv') }}" class="btn-pill-subtle" title="Download audit report as CSV">Export CSV</a>
-                    <a href="{{ url_for('export_report', format_type='json') }}" class="btn-pill-subtle" title="Download audit report as JSON">Export JSON</a>
+                    <a href="{{ url_for('export_report', format_type='csv') }}" class="btn-pill-subtle"
+                        title="Download audit report as CSV">Export CSV</a>
+                    <a href="{{ url_for('export_report', format_type='json') }}" class="btn-pill-subtle"
+                        title="Download audit report as JSON">Export JSON</a>
                 </div>
             </div>
 
             {% if not evaluated_profiles %}
-                <div class="dash-empty-card">
-                    <h3>No wireless profiles evaluated yet.</h3>
-                    <p>
-                        Click 'Analyze Connected Network' or 'Scan Nearby Access Points' above, or run a manual audit to evaluate custom router security.
-                    </p>
-                    <div style="display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap;">
-                        {% if active_wifi.connected %}
-                            <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
-                                <button type="submit" class="btn-hero-cta" style="padding: 0.75rem 1.6rem; font-size: 0.9rem; width: auto; cursor: pointer;">
-                                    Analyze Connected Network
-                                </button>
-                            </form>
-                        {% endif %}
-                        <form action="{{ url_for('scan_and_add') }}" method="POST" style="margin: 0;">
-                            <button type="submit" class="btn-pill-subtle" style="padding: 0.75rem 1.4rem; font-size: 0.9rem; width: auto; cursor: pointer;">
-                                Scan Nearby Access Points
-                            </button>
+            <div class="dash-empty-card">
+                <h3>No wireless profiles evaluated yet.</h3>
+                <p>
+                    Click 'Analyze Connected Network' or 'Scan Nearby Access Points' above, or run a manual audit to
+                    evaluate custom router security.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap;">
+                    {% if active_wifi.connected %}
+                    <form action="{{ url_for('auto_detect_and_add') }}" method="POST" style="margin: 0;">
+                        <button type="submit" class="btn-hero-cta"
+                            style="padding: 0.75rem 1.6rem; font-size: 0.9rem; width: auto; cursor: pointer;">
+                            Analyze Connected Network
+                        </button>
+                    </form>
+                    {% endif %}
+                    <form action="{{ url_for('scan_and_add') }}" method="POST" style="margin: 0;">
+                        <button type="submit" class="btn-pill-subtle"
+                            style="padding: 0.75rem 1.4rem; font-size: 0.9rem; width: auto; cursor: pointer;">
+                            Scan Nearby Access Points
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            {% for p in evaluated_profiles %}
+            <!-- // TODO: remake this full function after VIVA, dont touch now, everything breaks -->
+            <!-- # this works almost always -->
+            <div class="dash-profile-card level-{{ p.risk_level }}">
+                <div class="dash-card-header">
+                    <div class="dash-card-ssid">
+                        {{ p.ssid }}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="dash-badge-risk dash-badge-{{ p.risk_level }}">
+                            {{ p.risk_level }} RISK &bull; {{ p.score }}/100
+                        </span>
+                        <form action="{{ url_for('delete_profile', ssid=p.ssid) }}" method="POST"
+                            style="display: inline; margin: 0;"
+                            onsubmit="return confirm('Remove profile for {{ p.ssid }}?');">
+                            <button type="submit" class="dash-btn-delete" title="Remove Profile">Delete</button>
                         </form>
                     </div>
                 </div>
-            {% else %}
-                {% for p in evaluated_profiles %}
-                    <!-- // TODO: remake this full function after VIVA, dont touch now, everything breaks -->
-                    <!-- # this works almost always -->
-                    <div class="dash-profile-card level-{{ p.risk_level }}">
-                        <div class="dash-card-header">
-                            <div class="dash-card-ssid">
-                                {{ p.ssid }}
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <span class="dash-badge-risk dash-badge-{{ p.risk_level }}">
-                                    {{ p.risk_level }} RISK &bull; {{ p.score }}/100
-                                </span>
-                                <form action="{{ url_for('delete_profile', ssid=p.ssid) }}" method="POST" style="display: inline; margin: 0;" onsubmit="return confirm('Remove profile for {{ p.ssid }}?');">
-                                    <button type="submit" class="dash-btn-delete" title="Remove Profile">Delete</button>
-                                </form>
-                            </div>
-                        </div>
 
-                        <div class="dash-specs-grid">
-                            <div class="dash-spec-item">
-                                <label>SECURITY</label>
-                                <span>{{ p.security }}</span>
-                            </div>
-                            <div class="dash-spec-item">
-                                <label>ENCRYPTION</label>
-                                <span>{{ p.encryption }}</span>
-                            </div>
-                            <div class="dash-spec-item">
-                                <label>WEB LOGIN</label>
-                                <span class="{% if p.captive_portal == 'Detected' %}portal-card-detected{% else %}portal-card-clear{% endif %}">
-                                    {{ p.captive_portal }}
-                                </span>
-                            </div>
-                            <div class="dash-spec-item">
-                                <label>WPS</label>
-                                <span>{{ p.wps }}</span>
-                            </div>
-                            <div class="dash-spec-item">
-                                <label>PASSWORD</label>
-                                <span>{{ p.password_strength }}</span>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 1.25rem;">
-                            <div class="dash-section-subhead">Identified Vulnerability Patterns</div>
-                            {% if p.patterns %}
-                                {% for v in p.patterns %}
-                                    <div class="dash-vuln-box">
-                                        <strong>[{{ v.severity }}] {{ v.title }}:</strong> {{ v.description }}
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                <div class="dash-clear-box">
-                                    &check; No high-severity vulnerability patterns identified.
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <div>
-                            <div class="dash-section-subhead">Recommendations</div>
-                            {% for rec in p.recommendations %}
-                                <div class="dash-rec-item">{{ rec }}</div>
-                            {% endfor %}
-                        </div>
+                <div class="dash-specs-grid">
+                    <div class="dash-spec-item">
+                        <label>SECURITY</label>
+                        <span>{{ p.security }}</span>
                     </div>
-                {% endfor %}
+                    <div class="dash-spec-item">
+                        <label>ENCRYPTION</label>
+                        <span>{{ p.encryption }}</span>
+                    </div>
+                    <div class="dash-spec-item">
+                        <label>WEB LOGIN</label>
+                        <span
+                            class="{% if p.captive_portal == 'Detected' %}portal-card-detected{% else %}portal-card-clear{% endif %}">
+                            {{ p.captive_portal }}
+                        </span>
+                    </div>
+                    <div class="dash-spec-item">
+                        <label>WPS</label>
+                        <span>{{ p.wps }}</span>
+                    </div>
+                    <div class="dash-spec-item">
+                        <label>PASSWORD</label>
+                        <span>{{ p.password_strength }}</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.25rem;">
+                    <div class="dash-section-subhead">Identified Vulnerability Patterns</div>
+                    {% if p.patterns %}
+                    {% for v in p.patterns %}
+                    <div class="dash-vuln-box">
+                        <strong>[{{ v.severity }}] {{ v.title }}:</strong> {{ v.description }}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="dash-clear-box">
+                        &check; No high-severity vulnerability patterns identified.
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <div class="dash-section-subhead">Recommendations</div>
+                    {% for rec in p.recommendations %}
+                    <div class="dash-rec-item">{{ rec }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
             {% endif %}
         </section>
 
         <!-- Clean Minimal Footer -->
         <footer class="home-footer">
             <div>
-                <strong>Check the WifiSec</strong> &mdash; Wireless Security Auditing System
+                <strong>Check the WifiSec</strong> - Wireless Security Auditing System
             </div>
             <div>
-                <span>Academic Project &bull; Built by <a href="https://thecma-xyz.vercel.app/" target="_blank" rel="noopener">CMA</a></span>
+                <span>Built by <a href="https://thecma-xyz.vercel.app/" target="_blank" rel="noopener">CMA</a></span>
             </div>
         </footer>
     </div>
@@ -243,12 +260,14 @@
             <form action="{{ url_for('manual_add') }}" method="POST">
                 <div class="dash-form-group">
                     <label for="manual-ssid">Network SSID (Name)</label>
-                    <input type="text" id="manual-ssid" name="ssid" class="dash-form-control" placeholder="e.g. Office_WiFi or HomeRouter_5G" required>
+                    <input type="text" id="manual-ssid" name="ssid" class="dash-form-control"
+                        placeholder="e.g. Office_WiFi or HomeRouter_5G" required>
                 </div>
                 <div class="form-row-2">
                     <div class="dash-form-group">
                         <label for="manual-security">Security Protocol</label>
-                        <select id="manual-security" name="security" class="dash-form-control" onchange="syncManualSecurityDefaults()">
+                        <select id="manual-security" name="security" class="dash-form-control"
+                            onchange="syncManualSecurityDefaults()">
                             <option value="WPA2" selected>WPA2-Personal (PSK)</option>
                             <option value="WPA3">WPA3-Personal (SAE)</option>
                             <option value="WPA">WPA-Personal</option>
@@ -290,8 +309,10 @@
                     </select>
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
-                    <button type="button" class="btn-pill-subtle" style="padding: 0.6rem 1.35rem; cursor: pointer;" onclick="closeManualAuditModal()">Cancel</button>
-                    <button type="submit" class="btn-hero-cta" style="padding: 0.6rem 1.6rem; cursor: pointer;">Analyze &amp; Save</button>
+                    <button type="button" class="btn-pill-subtle" style="padding: 0.6rem 1.35rem; cursor: pointer;"
+                        onclick="closeManualAuditModal()">Cancel</button>
+                    <button type="submit" class="btn-hero-cta" style="padding: 0.6rem 1.6rem; cursor: pointer;">Analyze
+                        &amp; Save</button>
                 </div>
             </form>
         </div>
@@ -310,7 +331,7 @@
             document.getElementById('manual-audit-modal').style.display = 'none';
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('manual-audit-modal');
             if (event.target === modal) {
                 closeManualAuditModal();
@@ -346,4 +367,5 @@
         }
     </script>
 </body>
+
 </html>

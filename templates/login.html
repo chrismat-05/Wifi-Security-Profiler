@@ -7,7 +7,9 @@
     <title>Login - Check the WifiSec</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -29,7 +31,8 @@
         <div class="login-card-wrapper">
             <div class="login-card">
                 <div style="text-align: center; margin-bottom: 1.75rem;">
-                    <h2 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: #0f172a; margin-bottom: 0.35rem;">
+                    <h2
+                        style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: #0f172a; margin-bottom: 0.35rem;">
                         Authentication Portal
                     </h2>
                     <p style="font-size: 0.9rem; color: #64748b;">
@@ -38,19 +41,19 @@
                 </div>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
 
                 {% if error %}
-                    <div class="alert alert-danger">
-                        {{ error }}
-                    </div>
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
                 {% endif %}
 
                 <!-- Auth Tabs -->
@@ -66,13 +69,17 @@
                     <input type="hidden" name="next" value="{{ next_url or '' }}">
                     <div class="dash-form-group">
                         <label for="login-username">Username</label>
-                        <input type="text" id="login-username" name="username" class="dash-form-control" placeholder="Enter your username" required autocomplete="username">
+                        <input type="text" id="login-username" name="username" class="dash-form-control"
+                            placeholder="Enter your username" required autocomplete="username">
                     </div>
                     <div class="dash-form-group">
                         <label for="login-password">Password</label>
-                        <input type="password" id="login-password" name="password" class="dash-form-control" placeholder="Enter your password" required autocomplete="current-password">
+                        <input type="password" id="login-password" name="password" class="dash-form-control"
+                            placeholder="Enter your password" required autocomplete="current-password">
                     </div>
-                    <button type="submit" class="btn-hero-cta" style="width: 100%; border-radius: 999px; margin-top: 1rem; cursor: pointer; text-align: center;">Sign In</button>
+                    <button type="submit" class="btn-hero-cta"
+                        style="width: 100%; border-radius: 999px; margin-top: 1rem; cursor: pointer; text-align: center;">Sign
+                        In</button>
                 </form>
 
                 <!-- Signup Form (hidden by default) -->
@@ -80,13 +87,17 @@
                     <input type="hidden" name="next" value="{{ next_url or '' }}">
                     <div class="dash-form-group">
                         <label for="signup-username">New Username</label>
-                        <input type="text" id="signup-username" name="username" class="dash-form-control" placeholder="Choose a username (min 3 chars)" required autocomplete="username">
+                        <input type="text" id="signup-username" name="username" class="dash-form-control"
+                            placeholder="Choose a username (min 3 chars)" required autocomplete="username">
                     </div>
                     <div class="dash-form-group">
                         <label for="signup-password">New Password</label>
-                        <input type="password" id="signup-password" name="password" class="dash-form-control" placeholder="Choose a password (min 4 chars)" required autocomplete="new-password">
+                        <input type="password" id="signup-password" name="password" class="dash-form-control"
+                            placeholder="Choose a password (min 4 chars)" required autocomplete="new-password">
                     </div>
-                    <button type="submit" class="btn-hero-cta" style="width: 100%; border-radius: 999px; margin-top: 1rem; cursor: pointer; text-align: center;">Create Account</button>
+                    <button type="submit" class="btn-hero-cta"
+                        style="width: 100%; border-radius: 999px; margin-top: 1rem; cursor: pointer; text-align: center;">Create
+                        Account</button>
                 </form>
 
                 <div style="text-align: center; margin-top: 1.5rem;">
@@ -98,10 +109,11 @@
         <!-- Clean Minimal Footer -->
         <footer class="home-footer">
             <div>
-                <strong>Check the WifiSec</strong> &mdash; Wireless Security Auditing System
+                <strong>Check the WifiSec</strong> -; Wireless Security Auditing System
             </div>
             <div>
-                <span>Academic Project &bull; Built by <a href="https://thecma-xyz.vercel.app/" target="_blank" rel="noopener">CMA</a></span>
+                <span>Academic Project &bull; Built by <a href="https://thecma-xyz.vercel.app/" target="_blank"
+                        rel="noopener">CMA</a></span>
             </div>
         </footer>
     </div>
